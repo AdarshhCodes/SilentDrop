@@ -11,6 +11,7 @@ const calculateBurnoutScore = (commitsByDate) => {
     totalCommits += count;
 
     const day = new Date(date).getDay();
+  
 
     // Weekend commits (Saturday = 6, Sunday = 0)
     if (day === 0 || day === 6) {
