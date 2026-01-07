@@ -17,10 +17,8 @@ function App() {
   }, []);
 
   const loginWithGithub = () => {
-  window.location.href =
+    window.location.href =
     import.meta.env.VITE_API_BASE_URL + "/auth/github";
-};
-
   };
 
   return (
