@@ -3,24 +3,23 @@ const passport = require("passport");
 
 const router = express.Router();
 
-
 // GitHub login
 router.get(
   "/github",
   passport.authenticate("github", {
-     scope: ["user:email"],
-      prompt: "login",
-    })
+    scope: ["user:email"],
+    prompt: "login",
+  })
 );
 
 // GitHub callback
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "http://localhost:5173",
+    failureRedirect: process.env.FRONTEND_URL,
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect(process.env.FRONTEND_URL + "/dashboard");
   }
 );
 
@@ -36,13 +35,13 @@ router.get("/user", (req, res) => {
   });
 });
 
+// Logout
 router.get("/logout", (req, res, next) => {
   req.logout(err => {
-    if(err) return next(err);
+    if (err) return next(err);
     req.session.regenerate(() => {
       res.clearCookie("sid");
-      res.status(200).json({messsage: "Logged out successfully"});
-
+      res.status(200).json({ message: "Logged out successfully" });
     });
   });
 });

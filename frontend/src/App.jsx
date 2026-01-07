@@ -17,7 +17,11 @@ function App() {
   }, []);
 
   const loginWithGithub = () => {
-    window.location.assign("http://localhost:5000/auth/github");
+   const handleLogin = () => {
+  window.location.href =
+    import.meta.env.VITE_API_BASE_URL + "/auth/github";
+};
+
   };
 
   return (
