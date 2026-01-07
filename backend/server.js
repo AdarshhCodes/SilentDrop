@@ -42,7 +42,7 @@ require("./config/passport");
 //MongoDB Connection
 
 mongoose
-.connect("mongodb://127.0.0.1:27017")
+.connect(process.env.MONGO_URI)
 .then()
 .catch()
 
