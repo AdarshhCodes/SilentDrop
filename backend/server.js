@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require("cors");
 const express = require("express");
 
 const mongoose = require("mongoose");
@@ -13,19 +14,26 @@ const upload = require("./routes/upload");
 
 
 const app = express();
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
+
 
 
 app.use(express.json());
 
 app.use(session({
   name: "sid",
-  secret: "project2026",
+  secret: "process.env.SESSION_SECRET",
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: false,       
-    sameSite: "lax",    
+    secure: true,       
+    sameSite: "none",    
   }
 }));
 
