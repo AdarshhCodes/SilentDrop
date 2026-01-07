@@ -14,7 +14,6 @@ const upload = require("./routes/upload");
 
 
 const app = express();
-const cors = require("cors");
 
 app.use(
   cors({
