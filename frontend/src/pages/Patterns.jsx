@@ -62,7 +62,7 @@ function Patterns() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });
@@ -96,7 +96,7 @@ function Patterns() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });

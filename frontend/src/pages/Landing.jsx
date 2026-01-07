@@ -38,7 +38,7 @@ function Landing() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });
@@ -72,7 +72,7 @@ function Landing() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });

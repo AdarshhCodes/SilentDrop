@@ -65,7 +65,7 @@ function Trends() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });
@@ -99,7 +99,7 @@ function Trends() {
 
       <button
         onClick={() => {
-          api.get("/auth/logout", { withCredentials: true }).then(() => {
+          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
             window.location.replace("/");
           });

@@ -80,7 +80,7 @@ function Dashboard() {
 
             <button
               onClick={() => {
-                api.get("/auth/logout", { withCredentials: true }).then(() => {
+                api.get("/api/auth/logout", { withCredentials: true }).then(() => {
                   localStorage.clear();
                   window.location.replace("/");
                 });
@@ -115,7 +115,7 @@ function Dashboard() {
 
             <button
               onClick={() => {
-                api.get("/auth/logout", { withCredentials: true }).then(() => {
+                api.get("/api/auth/logout", { withCredentials: true }).then(() => {
                   localStorage.clear();
                   window.location.replace("/");
                 });
