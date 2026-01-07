@@ -11,13 +11,12 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    api.get("/auth/user")
+    api.get("/api/auth/user")
       .then(res => setUser(res.data))
       .catch(() => setUser(null));
   }, []);
 
   const loginWithGithub = () => {
-   const handleLogin = () => {
   window.location.href =
     import.meta.env.VITE_API_BASE_URL + "/auth/github";
 };
