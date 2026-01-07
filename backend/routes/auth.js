@@ -24,7 +24,7 @@ router.get(
 );
 
 // Get logged-in user
-router.get("/user", (req, res) => {
+router.get("/me", (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "Not authenticated" });
   }
@@ -40,7 +40,11 @@ router.get("/logout", (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
     req.session.regenerate(() => {
-      res.clearCookie("sid");
+      res.clearCookie("sid", {
+        path: "/",
+        sameSite: "none",
+        secure: true,
+      });
       res.status(200).json({ message: "Logged out successfully" });
     });
   });

@@ -8,18 +8,31 @@ function Dashboard() {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    api
-      .get("/analysis", { withCredentials: true })
-      .then((res) => {
-        setData(res.data);
+    const loadDashboard = async () => {
+      try {
+        // 1️⃣ Check login
+        const userRes = await api.get("/api/auth/me", {
+          withCredentials: true,
+        });
+        setUser(userRes.data);
+
+        // 2️⃣ Load analysis data
+        const analysisRes = await api.get("/analysis", {
+          withCredentials: true,
+        });
+
+        setData(analysisRes.data);
         setLoading(false);
-      })
-      .catch(() => {
-        setError("Not authenticated");
+      } catch (err) {
         setLoading(false);
-      });
+        window.location.replace("/");
+      }
+    };
+
+    loadDashboard();
   }, []);
 
   if (loading) {
@@ -32,15 +45,7 @@ function Dashboard() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center
-                      bg-gray-50 dark:bg-black
-                      text-gray-900 dark:text-gray-100">
-        {error}
-      </div>
-    );
-  }
+
 
   const getInsight = (risk) => {
     if (risk < 40) return "Your work rhythm looks healthy.";
@@ -56,8 +61,9 @@ function Dashboard() {
       <div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">
-            SilentDrop
+            SilentDrop{user ? ` · ${user.username}` : ""}
           </h1>
+
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
