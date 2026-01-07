@@ -4,7 +4,7 @@ function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleLogin = () => {
   window.location.href =
-    import.meta.env.VITE_API_BASE_URL + "/auth/github";
+    import.meta.env.VITE_API_BASE_URL + "/api/auth/github";
 };
 
   return (
