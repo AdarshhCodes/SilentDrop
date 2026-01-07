@@ -25,10 +25,11 @@ app.use(
 
 
 app.use(express.json());
+require("./config/passport");
 
 app.use(session({
-  name: "sid",
-  secret: "process.env.SESSION_SECRET",
+  name: "connect.sid",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -46,8 +47,6 @@ app.use("/api/analysis", analysisRoutes);
 app.use("/upload", upload);
 
 
-
-require("./config/passport");
 //MongoDB Connection
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -65,7 +64,7 @@ app.get("/", (req, res) => {
     res.send("SilentDrop backend is running ");
 
 });
-app.use("/api/commits", commitRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 
