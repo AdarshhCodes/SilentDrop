@@ -3,8 +3,9 @@ import {useState} from "react";
 function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleLogin = () => {
-    window.location.href = "/auth/github";
-  };
+  window.location.href =
+    import.meta.env.VITE_API_BASE_URL + "/auth/github";
+};
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black
