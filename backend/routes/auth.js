@@ -19,7 +19,7 @@ router.get(
     failureRedirect: process.env.FRONTEND_URL,
   }),
   (req, res) => {
-    res.redirect(process.env.FRONTEND_URL + "/dashboard");
+    res.redirect(process.env.FRONTEND_URL + "/");
   }
 );
 

@@ -11,7 +11,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    api.get("/api/auth/user")
+    api.get("/api/auth/me", { withCredentials: true})
       .then(res => setUser(res.data))
       .catch(() => setUser(null));
   }, []);
@@ -26,7 +26,7 @@ function App() {
       <Routes>
 
         {/* Landing Page */}
-        <Route
+        {/* <Route
           path="/"
           element={
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black text-white">
@@ -69,7 +69,7 @@ function App() {
               </div>
             </div>
           }
-        />
+        /> */}
        <Route path="/" element={<Landing />} />
        <Route path = "/patterns" element ={<Patterns />} />
        <Route path = "/trends" element={<Trends/>} />
