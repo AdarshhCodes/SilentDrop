@@ -14,9 +14,11 @@ const upload = require("./routes/upload");
 
 
 const app = express();
+const cors = require("cors");
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://silentdrop-frontend.onrender.com",
     credentials: true,
   })
 );
