@@ -19,7 +19,7 @@ router.get(
     failureRedirect: "https://silentdrop-frontend.onrender.com",
   }),
   (req, res) => {
-    res.redirect("https://silentdrop-frontend.onrender.com/");
+    res.redirect("https://silentdrop-frontend.onrender.com/dashboard");
   }
 );
 
@@ -40,7 +40,7 @@ router.get("/logout", (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
     req.session.regenerate(() => {
-      res.clearCookie("sid", {
+      res.clearCookie("connect.sid", {
         path: "/",
         sameSite: "none",
         secure: true,

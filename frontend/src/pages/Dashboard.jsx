@@ -14,15 +14,11 @@ function Dashboard() {
     const loadDashboard = async () => {
       try {
         // 1️⃣ Check login
-        const userRes = await api.get("/api/auth/me", {
-          withCredentials: true,
-        });
+        const userRes = await api.get("/api/auth/me");
         setUser(userRes.data);
 
         // 2️⃣ Load analysis data
-        const analysisRes = await api.get("/analysis", {
-          withCredentials: true,
-        });
+        const analysisRes = await api.get("/api/analysis");
 
         setData(analysisRes.data);
         setLoading(false);
