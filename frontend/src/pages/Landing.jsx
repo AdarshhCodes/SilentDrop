@@ -22,15 +22,16 @@ function Landing() {
   }, []);
 
   // Start GitHub OAuth
-  const handleLogin = () => {
-    window.location.href =
-      import.meta.env.VITE_API_BASE_URL + "/api/auth/github";
-  };
+const handleLogin = () => {
+  window.location.href =
+    "https://silentdrop-backend.onrender.com/api/auth/github";
+};
+
 
   // Logout
   const handleLogout = () => {
     api
-      .get("/api/auth/logout", { withCredentials: true })
+      .get("/api/auth/logout",)
       .then(() => window.location.replace("/"));
   };
 
