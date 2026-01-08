@@ -18,14 +18,21 @@ router.get(
   passport.authenticate("github", {
     failureRedirect: "https://silentdrop-frontend.onrender.com",
   }),
-  (req, res) => {
-    res.redirect("https://silentdrop-frontend.onrender.com/dashboard");
+  (req, res, next) => {
+    // FINALIZE SESSION
+    req.login(req.user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("https://silentdrop-frontend.onrender.com/dashboard");
+    });
   }
 );
 
+
 // Get logged-in user
 router.get("/me", (req, res) => {
-  if (!req.user) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) {
     return res.status(401).json({ message: "Not authenticated" });
   }
 
@@ -34,6 +41,7 @@ router.get("/me", (req, res) => {
     githubId: req.user.githubId,
   });
 });
+
 
 // Logout
 router.get("/logout", (req, res, next) => {
