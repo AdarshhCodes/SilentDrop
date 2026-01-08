@@ -14,7 +14,7 @@ const upload = require("./routes/upload");
 
 
 const app = express();
-
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: "https://silentdrop-frontend.onrender.com",
@@ -23,13 +23,12 @@ app.use(
 );
 
 
-app.set("trust proxy", 1);
+
 
 app.use(express.json());
-require("./config/passport");
+
 
 app.use(session({
-  name: "connect.sid",
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -40,7 +39,7 @@ app.use(session({
      maxAge: 1000 * 60 * 60 * 24, 
   }
 }));
-
+require("./config/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/commits", commitRoutes);
