@@ -10,28 +10,23 @@ function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        // 1️⃣ Check login
-        const userRes = await api.get("/api/auth/me");
-        setUser(userRes.data);
+ useEffect(() => {
+  const loadDashboard = async () => {
+    try {
+      const userRes = await api.get("/api/auth/me", { withCredentials: true });
+      setUser(userRes.data);
 
-        // 2️⃣ Load analysis data
-        const analysisRes = await api.get("/api/analysis");
+      const analysisRes = await api.get("/api/analysis", { withCredentials: true });
+      setData(analysisRes.data);
+      setLoading(false);
+    } catch (err) {
+      setTimeout(loadDashboard, 500); // retry once
+    }
+  };
 
-        setData(analysisRes.data);
-        setLoading(false);
-      }catch (err) {
-  console.error("Dashboard load failed", err);
-  setError("Unauthorized");
-  setLoading(false);
-}
+  loadDashboard();
+}, []);
 
-    };
-
-    loadDashboard();
-  }, []);
 
   if (loading) {
     return (

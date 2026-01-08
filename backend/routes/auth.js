@@ -32,14 +32,14 @@ router.get(
 
 // Get logged-in user
 router.get("/me", (req, res) => {
-  if (!req.isAuthenticated || !req.isAuthenticated()) {
-    return res.status(401).json({ message: "Not authenticated" });
+  if (req.session && req.session.passport && req.session.passport.user) {
+    return res.json({
+      username: req.user.username,
+      githubId: req.user.githubId,
+    });
   }
 
-  res.json({
-    username: req.user.username,
-    githubId: req.user.githubId,
-  });
+  return res.status(401).json({ message: "Not authenticated" });
 });
 
 
