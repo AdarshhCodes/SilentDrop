@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import RiskMeter from "../components/RiskMeter";
 import ThemeToggle from "../components/ThemeToggle";
-
+import {Link} from "react-router-dom";
 function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,10 +22,12 @@ function Dashboard() {
 
         setData(analysisRes.data);
         setLoading(false);
-      } catch (err) {
-        setLoading(false);
-        window.location.replace("/");
-      }
+      }catch (err) {
+  console.error("Dashboard load failed", err);
+  setError("Unauthorized");
+  setLoading(false);
+}
+
     };
 
     loadDashboard();
@@ -40,6 +42,14 @@ function Dashboard() {
       </div>
     );
   }
+  if (error) {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      Session expired. Please log in again.
+    </div>
+  );
+}
+
 
 
 
@@ -63,20 +73,20 @@ function Dashboard() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <a href="/patterns"
-              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-              Patterns
-            </a>
+            <Link to="/patterns"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Patterns
+      </Link>
 
-            <a href="/trends"
-              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-              Trends
-            </a>
+      <Link to="/trends"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Trends
+      </Link>
 
-            <a href="/reflection"
-              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-              Reflection
-            </a>
+      <Link to="/reflection"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Reflection
+      </Link>
 
             <ThemeToggle />
 
@@ -107,10 +117,9 @@ function Dashboard() {
           <div className="md:hidden mt-4 space-y-4
                     border-t border-gray-200 dark:border-gray-700 pt- transition-all duration-300
 ">
-            <a href="/patterns" className="block text-sm">Patterns</a>
-            <a href="/trends" className="block text-sm">Trends</a>
-            <a href="/reflection" className="block text-sm">Reflection</a>
-
+              <Link to="/patterns" className="block text-sm">Patterns</Link>
+                               <Link to="/trends" className="block text-sm">Trends</Link>
+                               <Link to="/reflection" className="block text-sm">Reflection</Link>
             <div className="pt-2">
               <ThemeToggle />
             </div>

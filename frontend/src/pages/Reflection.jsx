@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
+import {Link} from"react-router-dom";
 
 function Reflection() {
   const [risk, setRisk] = useState(null);
@@ -8,7 +9,7 @@ function Reflection() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    api.get("/analysis", { withCredentials: true }).then((res) => {
+    api.get("/api/analysis", { withCredentials: true }).then((res) => {
       setRisk(res.data.burnoutRisk);
       setLoading(false);
     });
@@ -55,20 +56,21 @@ function Reflection() {
 
     {/* Desktop Nav */}
     <div className="hidden md:flex items-center gap-6">
-      <a href="/patterns"
+      <Link to="/patterns"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Patterns
-      </a>
+      </Link>
 
-      <a href="/trends"
+      <Link to="/trends"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Trends
-      </a>
+      </Link>
 
-      <a href="/reflection"
+      <Link to="/reflection"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Reflection
-      </a>
+      </Link>
+
 
       <ThemeToggle />
 
@@ -98,9 +100,9 @@ function Reflection() {
   {menuOpen && (
     <div className="md:hidden mt-4 space-y-4
                     border-t border-gray-200 dark:border-gray-700 pt-4">
-      <a href="/patterns" className="block text-sm">Patterns</a>
-      <a href="/trends" className="block text-sm">Trends</a>
-      <a href="/reflection" className="block text-sm">Reflection</a>
+         <Link to="/patterns" className="block text-sm">Patterns</Link>
+            <Link to="/trends" className="block text-sm">Trends</Link>
+            <Link to="/reflection" className="block text-sm">Reflection</Link>
 
       <div className="pt-2">
         <ThemeToggle />

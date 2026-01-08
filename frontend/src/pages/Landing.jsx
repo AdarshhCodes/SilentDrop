@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
-
+import { Link} from "react-router-dom";
 function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -57,16 +57,20 @@ const handleLogin = () => {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <a href="/patterns" className="text-sm hover:underline">
-              Patterns
-            </a>
-            <a href="/trends" className="text-sm hover:underline">
-              Trends
-            </a>
-            <a href="/reflection" className="text-sm hover:underline">
-              Reflection
-            </a>
+             <Link to="/patterns"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Patterns
+      </Link>
 
+      <Link to="/trends"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Trends
+      </Link>
+
+      <Link to="/reflection"
+         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+        Reflection
+      </Link>
             <ThemeToggle />
 
             {user && (
@@ -91,16 +95,10 @@ const handleLogin = () => {
         {/* Mobile Menu */}
         {menuOpen && (
           <div className="md:hidden mt-4 space-y-4 border-t pt-4">
-            <a href="/patterns" className="block text-sm">
-              Patterns
-            </a>
-            <a href="/trends" className="block text-sm">
-              Trends
-            </a>
-            <a href="/reflection" className="block text-sm">
-              Reflection
-            </a>
-
+                  <Link to="/patterns" className="block text-sm">Patterns</Link>
+                   <Link to="/trends" className="block text-sm">Trends</Link>
+                   <Link to="/reflection" className="block text-sm">Reflection</Link>
+ 
             <ThemeToggle />
 
             {user && (
