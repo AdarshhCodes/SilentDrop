@@ -13,14 +13,15 @@ function Dashboard() {
  useEffect(() => {
   const loadDashboard = async () => {
     try {
-      const userRes = await api.get("/api/auth/me", { withCredentials: true });
+      const userRes = await api.get("/api/auth/me");
       setUser(userRes.data);
 
-      const analysisRes = await api.get("/api/analysis", { withCredentials: true });
+      const analysisRes = await api.get("/api/analysis");
       setData(analysisRes.data);
-      setLoading(false);
     } catch (err) {
-      setTimeout(loadDashboard, 500); // retry once
+      setError("Session expired. Please login again.");
+    } finally {
+      setLoading(false);
     }
   };
 
