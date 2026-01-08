@@ -11,8 +11,13 @@ function Patterns() {
   useEffect(() => {
     api.get("/api/analysis", { withCredentials: true }).then((res) => {
       setData(res.data);
-      setLoading(false);
-    });
+    })
+    .catch((err) => {
+    console.error("Patterns error", err);
+  })
+  .finally(() => {
+    setLoading(false);
+  });
   }, []);
 
   if (loading) {

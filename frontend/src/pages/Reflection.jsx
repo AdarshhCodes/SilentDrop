@@ -9,10 +9,17 @@ function Reflection() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    api.get("/api/analysis", { withCredentials: true }).then((res) => {
-      setRisk(res.data.burnoutRisk);
-      setLoading(false);
-    });
+   api.get("/api/analysis", { withCredentials: true })
+  .then((res) => {
+    setRisk(res.data.burnoutRisk);
+  })
+  .catch((err) => {
+    console.error("Reflection error", err);
+  })
+  .finally(() => {
+    setLoading(false);
+  });
+
   }, []);
 
   if (loading) {
