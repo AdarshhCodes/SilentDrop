@@ -12,9 +12,14 @@ function Landing() {
     api
       .get("/api/auth/me")
       .then((res) => {
-        setUser(res.data);
-        setLoading(false);
-      })
+  if (res.data && res.data.username) {
+    setUser(res.data);
+  } else {
+    setUser(null);
+  }
+  setLoading(false);
+})
+
       .catch(() => {
         setUser(null);
         setLoading(false);
