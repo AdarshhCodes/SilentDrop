@@ -62,7 +62,6 @@ function Trends() {
       </Link>
 
       <ThemeToggle />
-
       <button
         onClick={() => {
           api.get("/api/auth/logout", { withCredentials: true }).then(() => {

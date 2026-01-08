@@ -99,8 +99,7 @@ const handleLogin = () => {
                    <Link to="/trends" className="block text-sm">Trends</Link>
                    <Link to="/reflection" className="block text-sm">Reflection</Link>
  
-            <ThemeToggle />
-
+            <ThemeToggle /> 
             {user && (
               <button
                 onClick={handleLogout}
