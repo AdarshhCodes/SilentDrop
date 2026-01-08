@@ -16,10 +16,10 @@ router.get(
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: process.env.FRONTEND_URL,
+    failureRedirect: "https://silentdrop-frontend.onrender.com",
   }),
   (req, res) => {
-    res.redirect(process.env.FRONTEND_URL + "/");
+    res.redirect("https://silentdrop-frontend.onrender.com/");
   }
 );
 
