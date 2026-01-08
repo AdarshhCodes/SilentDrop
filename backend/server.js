@@ -23,6 +23,7 @@ app.use(
 );
 
 
+app.set("trust proxy", 1);
 
 app.use(express.json());
 require("./config/passport");
@@ -35,7 +36,8 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: true,       
-    sameSite: "none",    
+    sameSite: "none",   
+     maxAge: 1000 * 60 * 60 * 24, 
   }
 }));
 
