@@ -10,7 +10,7 @@ function Landing() {
   // Check login state
   useEffect(() => {
     api
-      .get("/api/auth/me", { withCredentials: true })
+      .get("/api/auth/me")
       .then((res) => {
         setUser(res.data);
         setLoading(false);
