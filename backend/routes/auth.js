@@ -1,5 +1,7 @@
 const express = require("express");
 const passport = require("passport");
+const { signToken } = require("../utils/jwt");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -12,59 +14,25 @@ router.get(
   })
 );
 
-// GitHub callback
+// GitHub callback → JWT
 router.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "https://silentdrop-frontend.onrender.com",
-    session: true,
+    session: false,
   }),
   (req, res) => {
-    // Save session explicitly before redirecting
-    req.session.save((err) => {
-      if (err) {
-        console.error("Session save error:", err);
-        return res.redirect("https://silentdrop-frontend.onrender.com");
-      }
-      res.redirect("https://silentdrop-frontend.onrender.com/dashboard");
-    });
+    const token = signToken(req.user);
+
+    res.redirect(
+      `https://silentdrop-frontend.onrender.com/auth-success?token=${token}`
+    );
   }
 );
 
-
-// Get logged-in user
-router.get("/me", (req, res) => {
- console.log("=== /me route hit ===");
-  console.log("Session ID:", req.sessionID);
-  console.log("Session:", req.session);
-  console.log("User:", req.user);
-  console.log("isAuthenticated:", req.isAuthenticated());
-  console.log("=====================");
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
-  return res.json({
-    username: req.user.username,
-    githubId: req.user.githubId,
-  });
-});
-
-
-// Logout
-router.get("/logout", (req, res, next) => {
-  req.logout(err => {
-    if (err) return next(err);
-    req.session.regenerate(() => {
-      res.clearCookie("connect.sid", {
-        path: "/",
-        sameSite: "none",
-        secure: true,
-      });
-      res.status(200).json({ message: "Logged out successfully" });
-    });
-  });
+// JWT test route
+router.get("/me", auth, (req, res) => {
+  res.json({ user: req.user });
 });
 
 module.exports = router;

@@ -1,22 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth")
 
 const { fetchCommitActivity } = require("../services/githubService");
 const { calculateBurnoutScore } = require("../services/burnoutService");
 
-router.get("/", async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+router.get("/me", auth, (req, res) => {
+  res.json({ user: req.user });
+});
+
+
+router.get("/", auth, async (req, res) => {
+   
     try {
-    const username = req.user.username;
+    const username = req.user.githubId || req.user.username;
 
     const commitsByDate = await fetchCommitActivity(username);
 
     const burnoutRisk = calculateBurnoutScore(commitsByDate);
 
-    // const totalCommits = Object.values(commitsByDate)
-    //   .reduce((sum, c) => sum + c, 0);
       //Additional pattern analysis
       let lateNightCommits = 0;
 let weekendCommits = 0;

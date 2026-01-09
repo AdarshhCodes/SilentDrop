@@ -4,6 +4,7 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 
+require("./config/passport");
 const session = require("express-session");
 const passport = require("passport");
 
@@ -21,13 +22,7 @@ app.use(
     credentials: true,
   })
 );
-
-
-
-
 app.use(express.json());
-
-
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -40,9 +35,7 @@ app.use(session({
      maxAge: 1000 * 60 * 60 * 24, 
   }
 }));
-require("./config/passport");
 app.use(passport.initialize());
-app.use(passport.session());
 app.use("/api/commits", commitRoutes);
 app.use("/api/auth", auth);
 app.use("/api/analysis", analysisRoutes);
