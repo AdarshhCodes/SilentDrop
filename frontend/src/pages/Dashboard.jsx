@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import RiskMeter from "../components/RiskMeter";
 import ThemeToggle from "../components/ThemeToggle";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [loading, setLoading] = useState(true);
@@ -33,16 +33,16 @@ function Dashboard() {
 
         setLoading(false);
       } catch (err) {
-         console.error("Dashboard error:", err);
+        console.error("Dashboard error:", err);
 
-  if (err.response?.status === 401) {
-    localStorage.removeItem("token");
-    navigate("/");
-  } else {
-    setError("Something went wrong. Please refresh.");
-  }
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/");
+        } else {
+          setError("Something went wrong. Please refresh.");
+        }
 
-  setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -82,26 +82,30 @@ function Dashboard() {
       {/* Navbar */}
       <div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">
-            SilentDrop{user ? ` · ${user.username}` : ""}
+          <h1
+            onClick={() => navigate("/dashboard")}
+            className="cursor-pointer text-xl font-bold"
+          >
+            SilentDrop · {user.githubUsername}
           </h1>
+
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/patterns"
+            <NavLink to="/patterns"
               className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
               Patterns
-            </Link>
+            </NavLink>
 
-            <Link to="/trends"
+            <NavLink to="/trends"
               className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
               Trends
-            </Link>
+            </NavLink>
 
-            <Link to="/reflection"
+            <NavLink to="/reflection"
               className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
               Reflection
-            </Link>
+            </NavLink>
 
             <ThemeToggle />
 
@@ -130,9 +134,13 @@ function Dashboard() {
         {menuOpen && (
           <div className="md:hidden mt-4 space-y-4
                     border-t border-gray-200 dark:border-gray-700 pt-4 transition-all duration-300">
-            <Link to="/patterns" className="block text-sm">Patterns</Link>
-            <Link to="/trends" className="block text-sm">Trends</Link>
-            <Link to="/reflection" className="block text-sm">Reflection</Link>
+            <NavLink to="/dashboard" className="block text-sm">
+              Dashboard
+            </NavLink>
+
+            <NavLink to="/patterns" className="block text-sm">Patterns</NavLink>
+            <NavLink to="/trends" className="block text-sm">Trends</NavLink>
+            <NavLink to="/reflection" className="block text-sm">Reflection</NavLink>
             <div className="pt-2">
               <ThemeToggle />
             </div>

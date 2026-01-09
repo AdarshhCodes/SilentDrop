@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
-import {Link} from"react-router-dom";
+import {NavLink} from"react-router-dom";
 
 function Reflection() {
   const [risk, setRisk] = useState(null);
@@ -63,20 +63,27 @@ function Reflection() {
 
     {/* Desktop Nav */}
     <div className="hidden md:flex items-center gap-6">
-      <Link to="/patterns"
+      <NavLink to="/patterns"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Patterns
-      </Link>
+      </NavLink>
 
-      <Link to="/trends"
+      <NavLink to="/trends"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Trends
-      </Link>
+      </NavLink>
 
-      <Link to="/reflection"
+      <NavLink to="/reflection"
          className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
         Reflection
-      </Link>
+      </NavLink>
+      <NavLink
+  to="/dashboard"
+  className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
+>
+  Dashboard
+</NavLink>
+
 
 
       <ThemeToggle />
@@ -107,9 +114,13 @@ function Reflection() {
   {menuOpen && (
     <div className="md:hidden mt-4 space-y-4
                     border-t border-gray-200 dark:border-gray-700 pt-4">
-         <Link to="/patterns" className="block text-sm">Patterns</Link>
-            <Link to="/trends" className="block text-sm">Trends</Link>
-            <Link to="/reflection" className="block text-sm">Reflection</Link>
+         <NavLink to="/patterns" className="block text-sm">Patterns</NavLink>
+            <NavLink to="/trends" className="block text-sm">Trends</NavLink>
+            <NavLink to="/reflection" className="block text-sm">Reflection</NavLink>
+            <NavLink to="/dashboard" className="block text-sm">
+  Dashboard
+</NavLink>
+
 
       <div className="pt-2">
         <ThemeToggle />
