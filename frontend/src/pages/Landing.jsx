@@ -31,39 +31,49 @@ function Landing() {
       </div>
 
       {/* Hero Section */}
-      <section className="min-h-screen bg-white dark:bg-black flex items-center">
-        <div className="max-w-6xl mx-auto px-6 text-center fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Burnout doesn’t shout.
-            <br />
-            <span className="text-blue-600 dark:text-blue-400">
-              It drops silently.
-            </span>
-          </h2>
+     <section className="relative min-h-screen bg-white dark:bg-black flex items-center">
+  <div className="max-w-6xl mx-auto px-6 text-center fade-in">
+    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+      Burnout doesn’t shout.
+      <br />
+      <span className="text-blue-600 dark:text-blue-400">
+        It drops silently.
+      </span>
+    </h2>
+    <p className="text-sm text-gray-500 mb-4">
+  A calm dashboard that reflects your GitHub work rhythm.
+</p>
 
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
-            SilentDrop analyzes your GitHub activity to gently detect burnout risk —
-            without notifications, without pressure.
-          </p>
+    <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
+      SilentDrop analyzes your GitHub activity to gently detect burnout risk —
+      without notifications, without pressure.
+    </p>
 
-          <button
-            onClick={handleLogin}
-            className="px-8 py-3 rounded-xl bg-white
+    <button
+      onClick={handleLogin}
+      className="px-8 py-3 rounded-xl bg-white
                  text-black text-sm font-medium
                  transition hover:opacity-90"
-          >
-            Continue with GitHub
-          </button>
+    >
+      Continue with GitHub
+    </button>
 
-          <p className="text-xs text-gray-500 mt-4">
-            Read-only GitHub access. No posts. No spam.
-          </p>
-        </div>
-        <p className="mt-16 text-xs text-gray-500 animate-bounce">
-          ↓ Scroll
-        </p>
+    <p className="text-xs text-gray-500 mt-4">
+      Read-only GitHub access. No posts. No spam.
+    </p>
+  </div>
 
-      </section>
+  {/* Scroll indicator */}
+  <p
+    className="
+      absolute bottom-6 left-1/2 -translate-x-1/2
+      text-xs text-gray-500 animate-bounce
+      select-none
+    "
+  >
+    ↓ Scroll
+  </p>
+</section>
 
 
       {/* How It Works */}

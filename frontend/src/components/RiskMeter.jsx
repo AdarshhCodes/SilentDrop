@@ -40,7 +40,7 @@ function RiskMeter({ value }) {
     circumference - (animatedValue / 100) * circumference;
 
   let color = "stroke-green-500";
-  let label = "Healthy";
+  let label = "Healthy Rhythm";
 
   if (value >= 70) {
     color = "stroke-red-500";

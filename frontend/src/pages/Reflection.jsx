@@ -143,17 +143,22 @@ function Reflection() {
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-6 py-24 text-center fade-in">
-        <h2 className="text-3xl font-semibold mb-6">
+        <h2 className="text-3xl font-semibold mb-4">
           {message.title}
         </h2>
+         <p className="text-sm text-gray-500 mb-8">
+  Take a quiet moment to reflect on your day.
+</p>
 
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
           {message.text}
         </p>
 
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow
-                        p-8 text-left max-w-xl mx-auto">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow
+                p-8 text-left max-w-xl mx-auto
+                border border-gray-100 dark:border-gray-800">
+
+          <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
             Reflection prompt
           </p>
 
@@ -161,6 +166,7 @@ function Reflection() {
             {message.prompt}
           </p>
         </div>
+        
 
         <p className="text-xs text-gray-400 mt-10">
           SilentDrop never judges. It only reflects.
