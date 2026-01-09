@@ -69,7 +69,7 @@ function Trends() {
 
 
       <ThemeToggle />
-      <button
+      {/* <button
         onClick={() => {
           api.get("/api/auth/logout", { withCredentials: true }).then(() => {
             localStorage.clear();
@@ -79,7 +79,17 @@ function Trends() {
         className="text-sm text-red-500 hover:underline"
       >
         Logout
-      </button>
+      </button> */}
+      <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.replace("/");
+              }}
+
+              className="text-sm text-red-500 hover:underline"
+            >
+              Logout
+            </button>
     </div>
 
     {/* Mobile Menu Button */}
