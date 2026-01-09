@@ -40,15 +40,12 @@ function RiskMeter({ value }) {
     circumference - (animatedValue / 100) * circumference;
 
   let color = "stroke-green-500";
-  let label = "Healthy Rhythm";
+if (value >= 70) {
+  color = "stroke-red-500";
+} else if (value >= 40) {
+  color = "stroke-yellow-400";
+}
 
-  if (value >= 70) {
-    color = "stroke-red-500";
-    label = "High Strain Detected";
-  } else if (value >= 40) {
-    color = "stroke-yellow-400";
-    label = "Pushing Hard";
-  }
 
   return (
     <div className="relative flex items-center justify-center">
@@ -84,13 +81,6 @@ function RiskMeter({ value }) {
         <p className="text-3xl font-bold">
           {animatedValue}%
         </p>
-
-        {animationDone && (
-          <p className="text-sm text-gray-400 opacity-0 animate-fadeIn">
-  {label}
-</p>
-
-        )}
       </div>
     </div>
   );

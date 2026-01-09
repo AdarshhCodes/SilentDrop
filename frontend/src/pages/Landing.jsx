@@ -22,8 +22,12 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-      {/* Navbar */}
-      <div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
+      <div className="
+  bg-white dark:bg-gray-900
+  border-b border-gray-200 dark:border-gray-800
+  px-6 py-4
+">
+
         <div className="flex justify-between items-center max-w-6xl mx-auto">
           <h1 className="text-xl font-bold">SilentDrop</h1>
           <ThemeToggle />
@@ -31,49 +35,58 @@ function Landing() {
       </div>
 
       {/* Hero Section */}
-     <section className="relative min-h-screen bg-white dark:bg-black flex items-center">
-  <div className="max-w-6xl mx-auto px-6 text-center fade-in">
-    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-      Burnout doesn’t shout.
-      <br />
-      <span className="text-blue-600 dark:text-blue-400">
-        It drops silently.
-      </span>
-    </h2>
-    <p className="text-sm text-gray-500 mb-4">
-  A calm dashboard that reflects your GitHub work rhythm.
+      <section className="relative min-h-screen bg-white dark:bg-black flex flex-col justify-center">
+        <div className="max-w-6xl mx-auto px-6 text-center fade-in">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Burnout doesn’t shout.
+            <br />
+            <span className="text-blue-600 dark:text-blue-400">
+              It drops silently.
+            </span>
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            A calm dashboard that reflects your GitHub work rhythm.
+          </p>
+
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
+            SilentDrop analyzes your GitHub activity to gently detect burnout risk —
+            without notifications, without pressure.
+          </p>
+
+        <button
+  onClick={handleLogin}
+  className="
+    px-8 py-3 rounded-xl
+    bg-black text-white
+    dark:bg-white dark:text-black
+    text-sm font-medium
+    shadow-md
+    hover:shadow-lg
+    transition
+  "
+>
+  Continue with GitHub
+</button>
+
+
+          <p className="text-xs text-gray-500 mt-4">
+            Read-only GitHub access. No posts. No spam.
+          </p>
+        </div>
+
+        {/* Scroll indicator */}
+       <p
+  className="
+    absolute bottom-8 left-1/2 -translate-x-1/2
+    text-sm text-gray-600
+    animate-bounce
+    select-none
+  "
+>
+  ↓ Scroll
 </p>
 
-    <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
-      SilentDrop analyzes your GitHub activity to gently detect burnout risk —
-      without notifications, without pressure.
-    </p>
-
-    <button
-      onClick={handleLogin}
-      className="px-8 py-3 rounded-xl bg-white
-                 text-black text-sm font-medium
-                 transition hover:opacity-90"
-    >
-      Continue with GitHub
-    </button>
-
-    <p className="text-xs text-gray-500 mt-4">
-      Read-only GitHub access. No posts. No spam.
-    </p>
-  </div>
-
-  {/* Scroll indicator */}
-  <p
-    className="
-      absolute bottom-6 left-1/2 -translate-x-1/2
-      text-xs text-gray-500 animate-bounce
-      select-none
-    "
-  >
-    ↓ Scroll
-  </p>
-</section>
+      </section>
 
 
       {/* How It Works */}
@@ -127,7 +140,7 @@ function Landing() {
               </p>
             </div>
 
-           <div className="
+            <div className="
   bg-white dark:bg-gray-800 p-6 rounded-xl
   shadow transition-all duration-300 ease-out
   hover:scale-[1.03] hover:shadow-xl
@@ -139,7 +152,7 @@ function Landing() {
               </p>
             </div>
 
-           <div className="
+            <div className="
   bg-white dark:bg-gray-800 p-6 rounded-xl
   shadow transition-all duration-300 ease-out
   hover:scale-[1.03] hover:shadow-xl

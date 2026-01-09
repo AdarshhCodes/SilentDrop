@@ -214,10 +214,10 @@ function Dashboard() {
                 </p>
                 <p className="text-2xl font-bold">
                   {data.burnoutRisk < 40
-                    ? "🟢 Healthy Rhythm"
+                    ? "Healthy Rhythm"
                     : data.burnoutRisk < 70
-                      ? "🟡 Pushing Hard"
-                      : "🔴 High Strain Detected"}
+                      ? "Pushing Hard"
+                      : "High Strain Detected"}
                 </p>
               </div>
             </div>
