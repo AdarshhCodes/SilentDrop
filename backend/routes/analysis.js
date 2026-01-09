@@ -13,7 +13,7 @@ router.get("/me", auth, (req, res) => {
 router.get("/", auth, async (req, res) => {
    
     try {
-    const username = req.user.githubId;
+    const username = req.user.githubId || req.user.username;
     if (!username) {
   return res.status(400).json({ error: "GitHub username missing" });
 }

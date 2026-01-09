@@ -5,6 +5,7 @@ const signToken = (user) => {
     {
       id: user._id,
       githubId: user.githubId,
+       username: user.username,
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }

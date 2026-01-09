@@ -1,22 +1,27 @@
+// In src/pages/AuthSuccess.jsx (create this new file)
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-const AuthSuccess = () => {
+function AuthSuccess() {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
+    const token = searchParams.get("token");
+    
     if (token) {
       localStorage.setItem("token", token);
       navigate("/dashboard");
     } else {
       navigate("/");
     }
-  }, [navigate]);
+  }, [searchParams, navigate]);
 
-  return <p>Logging you in...</p>;
-};
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      Logging you in...
+    </div>
+  );
+}
 
 export default AuthSuccess;
