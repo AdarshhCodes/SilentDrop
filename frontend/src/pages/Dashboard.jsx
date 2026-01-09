@@ -12,28 +12,37 @@ function Dashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // ADD THIS useEffect - THIS WAS MISSING!
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
+
     const fetchData = async () => {
       try {
         // First check authentication
         const userRes = await api.get("/api/auth/me");
-        setUser(userRes.data);
+        setUser(userRes.data.user);
 
         // Then fetch analysis data
         const analysisRes = await api.get("/api/analysis");
         setData(analysisRes.data);
-        
+
         setLoading(false);
       } catch (err) {
-        console.error("Dashboard error:", err);
-        setError("Session expired. Please log in again.");
-        setLoading(false);
-        
-        // Redirect to home after 2 seconds
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
+         console.error("Dashboard error:", err);
+
+  if (err.response?.status === 401) {
+    localStorage.removeItem("token");
+    navigate("/");
+  } else {
+    setError("Something went wrong. Please refresh.");
+  }
+
+  setLoading(false);
       }
     };
 
@@ -98,11 +107,10 @@ function Dashboard() {
 
             <button
               onClick={() => {
-                api.get("/api/auth/logout").then(() => {
-                  localStorage.clear();
-                  window.location.replace("/");
-                });
+                localStorage.removeItem("token");
+                window.location.replace("/");
               }}
+
               className="text-sm text-red-500 hover:underline"
             >
               Logout
@@ -131,11 +139,10 @@ function Dashboard() {
 
             <button
               onClick={() => {
-                api.get("/api/auth/logout").then(() => {
-                  localStorage.clear();
-                  window.location.replace("/");
-                });
+                localStorage.removeItem("token");
+                window.location.replace("/");
               }}
+
               className="block text-sm text-red-500"
             >
               Logout
