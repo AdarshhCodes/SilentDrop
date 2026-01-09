@@ -34,6 +34,13 @@ router.get(
 
 // Get logged-in user
 router.get("/me", (req, res) => {
+ console.log("=== /me route hit ===");
+  console.log("Session ID:", req.sessionID);
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+  console.log("isAuthenticated:", req.isAuthenticated());
+  console.log("=====================");
+
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Not authenticated" });
   }
