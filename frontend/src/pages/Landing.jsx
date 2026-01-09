@@ -31,35 +31,39 @@ function Landing() {
       </div>
 
       {/* Hero Section */}
-   <section className="min-h-screen bg-black flex items-center">
-  <div className="max-w-6xl mx-auto px-6 text-center fade-in">
-    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-      Burnout doesn’t shout.
-      <br />
-      <span className="text-blue-600 dark:text-blue-400">
-        It drops silently.
-      </span>
-    </h2>
+      <section className="min-h-screen bg-white dark:bg-black flex items-center">
+        <div className="max-w-6xl mx-auto px-6 text-center fade-in">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            Burnout doesn’t shout.
+            <br />
+            <span className="text-blue-600 dark:text-blue-400">
+              It drops silently.
+            </span>
+          </h2>
 
-    <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
-      SilentDrop analyzes your GitHub activity to gently detect burnout risk —
-      without notifications, without pressure.
-    </p>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
+            SilentDrop analyzes your GitHub activity to gently detect burnout risk —
+            without notifications, without pressure.
+          </p>
 
-    <button
-      onClick={handleLogin}
-      className="px-8 py-3 rounded-xl bg-white
+          <button
+            onClick={handleLogin}
+            className="px-8 py-3 rounded-xl bg-white
                  text-black text-sm font-medium
                  transition hover:opacity-90"
-    >
-      Continue with GitHub
-    </button>
+          >
+            Continue with GitHub
+          </button>
 
-    <p className="text-xs text-gray-500 mt-4">
-      Read-only GitHub access. No posts. No spam.
-    </p>
-  </div>
-</section>
+          <p className="text-xs text-gray-500 mt-4">
+            Read-only GitHub access. No posts. No spam.
+          </p>
+        </div>
+        <p className="mt-16 text-xs text-gray-500 animate-bounce">
+          ↓ Scroll
+        </p>
+
+      </section>
 
 
       {/* How It Works */}
@@ -101,21 +105,36 @@ function Landing() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 text-sm">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            <div className="
+  bg-white dark:bg-gray-800 p-6 rounded-xl
+  shadow transition-all duration-300 ease-out
+  hover:scale-[1.03] hover:shadow-xl
+">
+
               <h4 className="font-semibold mb-2">Privacy First</h4>
               <p className="text-gray-500">
                 Read-only GitHub access. We never write, post, or modify anything.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+           <div className="
+  bg-white dark:bg-gray-800 p-6 rounded-xl
+  shadow transition-all duration-300 ease-out
+  hover:scale-[1.03] hover:shadow-xl
+">
+
               <h4 className="font-semibold mb-2">No Burnout Alerts</h4>
               <p className="text-gray-500">
                 Silent insights instead of anxiety-inducing notifications.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+           <div className="
+  bg-white dark:bg-gray-800 p-6 rounded-xl
+  shadow transition-all duration-300 ease-out
+  hover:scale-[1.03] hover:shadow-xl
+">
+
               <h4 className="font-semibold mb-2">Built for Developers</h4>
               <p className="text-gray-500">
                 Designed with empathy for real developer workflows.

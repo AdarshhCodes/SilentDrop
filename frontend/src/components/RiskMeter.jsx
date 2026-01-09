@@ -44,10 +44,10 @@ function RiskMeter({ value }) {
 
   if (value >= 70) {
     color = "stroke-red-500";
-    label = "Burnout Likely";
+    label = "High Strain Detected";
   } else if (value >= 40) {
     color = "stroke-yellow-400";
-    label = "At Risk";
+    label = "Pushing Hard";
   }
 
   return (

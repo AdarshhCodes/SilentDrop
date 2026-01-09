@@ -73,17 +73,7 @@ function Patterns() {
 
       <ThemeToggle />
 
-      {/* <button
-        onClick={() => {
-          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
-            localStorage.clear();
-            window.location.replace("/");
-          });
-        }}
-        className="text-sm text-red-500 hover:underline"
-      >
-        Logout
-      </button> */}
+    
       <button
               onClick={() => {
                 localStorage.removeItem("token");
@@ -92,7 +82,7 @@ function Patterns() {
 
               className="text-sm text-red-500 hover:underline"
             >
-              Logout
+              Sign out
             </button>
     </div>
 
@@ -130,7 +120,7 @@ function Patterns() {
         }}
         className="block text-sm text-red-500"
       >
-        Logout
+        Sign out
       </button>
     </div>
   )}

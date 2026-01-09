@@ -117,7 +117,7 @@ function Dashboard() {
 
               className="text-sm text-red-500 hover:underline"
             >
-              Logout
+              Sign out
             </button>
           </div>
 
@@ -153,7 +153,7 @@ function Dashboard() {
 
               className="block text-sm text-red-500"
             >
-              Logout
+              Sign out
             </button>
           </div>
         )}
@@ -203,8 +203,8 @@ function Dashboard() {
                   {data.burnoutRisk < 40
                     ? "🟢 Healthy"
                     : data.burnoutRisk < 70
-                      ? "🟡 At Risk"
-                      : "🔴 Burnout Likely"}
+                      ? "🟡 Pushing Hard"
+                      : "🔴 High Strain Detected"}
                 </p>
               </div>
             </div>
