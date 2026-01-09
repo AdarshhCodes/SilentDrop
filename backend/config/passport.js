@@ -22,7 +22,7 @@ passport.use(
             if (!user) {
                 user = await User.create({
                     githubId: profile.id,
-                    username: profile.username,
+                    username: profile.username || profile.login,
                     profileUrl: profile.profileUrl,
                 });
             }
