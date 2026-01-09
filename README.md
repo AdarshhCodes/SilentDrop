@@ -47,7 +47,7 @@ Just awareness.
 - Express
 - Passport.js (GitHub OAuth)
 - MongoDB + Mongoose
-- Express Sessions
+- JWT TOKENS
 
 ---
 
