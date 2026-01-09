@@ -17,12 +17,14 @@ router.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "https://silentdrop-frontend.onrender.com",
+    session: true,
   }),
-  (req, res, next) => {
-    // FINALIZE SESSION
-    req.login(req.user, (err) => {
+  (req, res) => {
+    // Save session explicitly before redirecting
+    req.session.save((err) => {
       if (err) {
-        return next(err);
+        console.error("Session save error:", err);
+        return res.redirect("https://silentdrop-frontend.onrender.com");
       }
       res.redirect("https://silentdrop-frontend.onrender.com/dashboard");
     });
