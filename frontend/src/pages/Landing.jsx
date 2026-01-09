@@ -25,7 +25,7 @@ function Landing() {
       <div className="
   bg-white dark:bg-gray-900
   border-b border-gray-200 dark:border-gray-800
-  px-6 py-2
+  px-6 py-4
 ">
 
         <div className="flex justify-between items-center max-w-6xl mx-auto">
