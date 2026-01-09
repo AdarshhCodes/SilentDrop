@@ -21,11 +21,11 @@ function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-gray-200 dark:bg-black text-gray-900 dark:text-gray-100">
       <div className="
   bg-white dark:bg-gray-900
   border-b border-gray-200 dark:border-gray-800
-  px-6 py-4
+  px-6 py-2
 ">
 
         <div className="flex justify-between items-center max-w-6xl mx-auto">
@@ -37,7 +37,7 @@ function Landing() {
       {/* Hero Section */}
       <section className="relative min-h-screen bg-white dark:bg-black flex flex-col justify-center">
         <div className="max-w-6xl mx-auto px-6 text-center fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black dark:text-white">
             Burnout doesn’t shout.
             <br />
             <span className="text-blue-600 dark:text-blue-400">
@@ -74,23 +74,24 @@ function Landing() {
           </p>
         </div>
 
-        {/* Scroll indicator */}
-       <p
-  className="
-    absolute bottom-8 left-1/2 -translate-x-1/2
-    text-sm text-gray-600
-    animate-bounce
-    select-none
-  "
->
-  ↓ Scroll
-</p>
+    
 
       </section>
-
+<div className="bg-white dark:bg-black flex justify-center py-8">
+  <p
+    className="
+      text-base md:text-lg
+      text-gray-600 dark:text-gray-400
+      animate-bounce
+      select-none
+    "
+  >
+    ↓ Scroll
+  </p>
+</div>
 
       {/* How It Works */}
-      <section className="bg-white dark:bg-gray-900 py-20">
+      <section className="bg-white dark:bg-gray-900 py-14">
         <div className="max-w-6xl mx-auto px-6">
           <h3 className="text-2xl font-semibold text-center mb-12">
             How SilentDrop Works
