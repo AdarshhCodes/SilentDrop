@@ -13,7 +13,11 @@ router.get("/me", auth, (req, res) => {
 router.get("/", auth, async (req, res) => {
    
     try {
-    const username = req.user.githubId || req.user.username;
+    const username = req.user.githubId;
+    if (!username) {
+  return res.status(400).json({ error: "GitHub username missing" });
+}
+
 
     const commitsByDate = await fetchCommitActivity(username);
 
