@@ -45,7 +45,7 @@ app.use("/upload", upload);
 
 //MongoDB Connection
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => {
     console.error("MongoDB connection error:", err);
