@@ -28,7 +28,7 @@ function Dashboard() {
         setUser(userRes.data.user);
 
         // Then fetch analysis data
-        const analysisRes = await api.get("/api/analysis");
+        const analysisRes = await api.get("/api/dashboard");
         setData(analysisRes.data);
 
         setLoading(false);
@@ -204,7 +204,7 @@ function Dashboard() {
                   Total Commits
                 </p>
                 <p className="text-2xl font-bold">
-                  {data.totalCommits}
+                  {data.todaysCommits}
                 </p>
               </div>
 
