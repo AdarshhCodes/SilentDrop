@@ -3,15 +3,15 @@ import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
 function Trends() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     api
-      .get("/trends", { withCredentials: true })
+      .get("/api/trends", { withCredentials: true })
       .then((res) => {
-        setData(res.data.trend);
+        setData(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -26,8 +26,6 @@ function Trends() {
       </div>
     );
   }
-
-
   const latest = data[data.length - 1]?.risk || 0;
   const previous = data[data.length - 2]?.risk || latest;
 
