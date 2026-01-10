@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import MiniTrendChart from "../components/MiniTrendChart";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
@@ -10,9 +9,9 @@ function Trends() {
 
   useEffect(() => {
     api
-      .get("/api/trends", { withCredentials: true })
+      .get("/trends", { withCredentials: true })
       .then((res) => {
-        setData(res.data);
+        setData(res.data.trend);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -28,12 +27,13 @@ function Trends() {
     );
   }
 
-  const latest = data?.latestRisk ?? 0;
-  const previous = data?.previousRisk ?? latest;
-  const direction = data?.direction ?? "Stable";
-  const history = Array.isArray(data?.history) ? data.history : [];
 
+  const latest = data[data.length - 1]?.risk || 0;
+  const previous = data[data.length - 2]?.risk || latest;
 
+  let direction = "Stable";
+  if (latest > previous) direction = "Worsening";
+  if (latest < previous) direction = "Improving";
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black
                     text-gray-900 dark:text-gray-100">
@@ -121,56 +121,50 @@ function Trends() {
       </div>
 
 {/* Content */}
-<div className="max-w-6xl mx-auto px-6 py-10 fade-in">
-  <h2 className="text-2xl font-semibold mb-8">
-    Burnout Trends
-  </h2>
+ <div className="max-w-6xl mx-auto px-6 py-10 fade-in">
+        <h2 className="text-2xl font-semibold mb-8">
+          Burnout Trends
+        </h2>
 
-  {/* Summary cards */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-    <TrendCard title="Latest Risk" value={`${latest}%`} />
-    <TrendCard title="Previous Risk" value={`${previous}%`} />
-    <TrendCard title="Direction" value={direction} />
-  </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <TrendCard title="Latest Risk" value={`${latest}%`} />
+          <TrendCard title="Previous Risk" value={`${previous}%`} />
+          <TrendCard
+            title="Direction"
+            value={
+              direction === "Improving"
+                ? "Improving"
+                : direction === "Worsening"
+                ? "Worsening"
+                : "Stable"
+            }
+          />
+        </div>
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6">
+          <h3 className="font-semibold mb-4">
+            Recent History
+          </h3>
 
-  {/* Mini trend chart */}
-  <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 mb-10">
-    <h3 className="font-semibold mb-4">Burnout trend</h3>
+          <ul className="space-y-3 text-sm">
+            {data.map((item) => (
+              <li
+                key={item.date}
+                className="flex justify-between border-b
+                           border-gray-200 dark:border-gray-700 pb-2"
+              >
+                <span>{item.date}</span>
+                <span className="font-medium">
+                  {item.risk}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-    <MiniTrendChart data={history} />
-
-    <p className="text-xs text-gray-400 mt-2">
-      Based on daily burnout snapshots
-    </p>
-  </div>
-
-  {/* Recent history */}
-  <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6">
-    <h3 className="font-semibold mb-4">
-      Recent History
-    </h3>
-
-    <ul className="space-y-3 text-sm">
-      {history.map((item) => (
-        <li
-          key={item.date}
-          className="flex justify-between border-b
-                     border-gray-200 dark:border-gray-700 pb-2"
-        >
-          <span>{item.date}</span>
-          <span className="font-medium">
-            {item.burnoutRisk}%
-          </span>
-        </li>
-      ))}
-    </ul>
-  </div>
-
-  <p className="text-xs text-gray-400 mt-6">
-    Trends are derived from recent coding behavior and activity timing.
-  </p>
-</div>
-
+ <p className="text-xs text-gray-400 mt-6">
+          Trends are derived from recent coding behavior and activity timing.
+        </p>
+      </div>
     </div>
   );
 }

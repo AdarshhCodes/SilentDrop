@@ -7,8 +7,6 @@ const { getISTHour, getISTDay } = require("../utils/time");
 
 const { fetchRawCommits } = require("../services/githubService");
 
-const {calculateTodayBurnout} = require("../services/burnoutService");
-
 router.get("/", auth, async (req, res) => {
   try {
     const username = req.user.githubUsername;
@@ -74,10 +72,6 @@ if (totalCommits >= 50) {
         peakHour = hour;
       }
     });
-    if (totalCommits > 0 && peakHour === null) {
-  peakHour = hourHistogram.findIndex((c) => c > 0);
-}
-    const burnoutRisk =calculateTodayBurnout(totalCommits);
 
     res.json({
       totalCommits,

@@ -37,7 +37,7 @@ app.use(passport.initialize());
 app.use("/api/auth", auth);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analysis", analysisRoutes);
-app.use("/api/trends", require("./routes/trends"));
+
 
 
 

@@ -34,34 +34,6 @@ const calculateBurnoutScore = (commitsByDate) => {
 
   return Math.min(100, Math.round(riskScore));
 };
-// 🔹 Daily burnout (used for dashboard & trends)
-const calculateTodayBurnout = (totalCommits) => {
-   if (totalCommits === 0) return 0;
 
-  // Very light work
-  if (totalCommits <= 4) return 10;
-  if (totoalCommits <= 7) return 18;
 
-  // Normal productive day
-  if (totalCommits <= 10) return 25;
-  if (totalCommits <= 14) return 32;
-  if (totalCommits <= 17) return 40;
-
-  // Heavy focus
-  if (totalCommits <= 20) return 48;
-  if (totalCommits <= 22) return 56;
-  if (totalCommits <= 25) return 64;
-
-  // Intense workload
-  if (totalCommits <= 28) return 72;
-  if (totalCommits <= 34) return 80;
-
-  // Very high strain
-  if (totalCommits <= 40) return 88;
-  if (totalCommits <= 50) return 94;
-
-  // Extreme / unhealthy
-  return 100;
-};
-
-module.exports = { calculateBurnoutScore, calculateTodayBurnout};
+module.exports = { calculateBurnoutScore};
