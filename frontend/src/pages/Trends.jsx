@@ -136,10 +136,10 @@ function Trends() {
             title="Direction"
             value={
               direction === "Improving"
-                ? "🟢 Improving"
+                ? "Improving"
                 : direction === "Worsening"
-                ? "🔴 Worsening"
-                : "🟡 Stable"
+                ? "Worsening"
+                : "Stable"
             }
           />
         </div>

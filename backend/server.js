@@ -8,11 +8,10 @@ require("./config/passport");
 const session = require("express-session");
 const passport = require("passport");
 
-const commitRoutes = require("./routes/commits");
 const analysisRoutes = require("./routes/analysis");
 const auth = require("./routes/auth");
 const upload = require("./routes/upload");
-
+const dashboardRoutes = require("./routes/dashboard.routes")
 
 const app = express();
 app.set("trust proxy", 1);
@@ -36,15 +35,17 @@ app.use(session({
   }
 }));
 app.use(passport.initialize());
-app.use("/api/commits", commitRoutes);
 app.use("/api/auth", auth);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/upload", upload);
 
 
+
+
 //MongoDB Connection
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB connected"))
   .catch(err => {
     console.error("MongoDB connection error:", err);
