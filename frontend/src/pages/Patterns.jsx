@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
-const [showHeatmap, setShowHeatmap] = useState(false);
+
 
 
 function formatHour(hour) {
@@ -27,6 +27,7 @@ function Patterns() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(false);
 
  useEffect(() => {
   api
