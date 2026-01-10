@@ -6,10 +6,9 @@ const { ANALYSIS_DAYS_WINDOW } = require("../constants/analysisWindow");
 const { getISTHour, getISTDay } = require("../utils/time");
 
 const { fetchRawCommits } = require("../services/githubService");
+const { upsertDailySnapshot} = require("../services/snapshotService");
+const {calculateTodayBurnout} = require("../services/burnoutService");
 
-/*
- Uses REAL commit timestamps (IST)
- */
 router.get("/", auth, async (req, res) => {
   try {
     const username = req.user.githubUsername;
@@ -75,6 +74,23 @@ if (totalCommits >= 50) {
         peakHour = hour;
       }
     });
+    const burnoutRisk =calculateTodayBurnout(totalCommits);
+ 
+    await upsertDailySnapshot({
+  userId: req.user._id,
+  analysis: {
+    burnoutRisk,
+    totalCommits,
+    pattern: {
+      lateNightPercentage:
+        totalCommits === 0 ? 0 : Math.round((lateNightCommits / totalCommits) * 100),
+      weekendPercentage:
+        totalCommits === 0 ? 0 : Math.round((weekendCommits / totalCommits) * 100),
+      confidence,
+    },
+  },
+});
+
 
     res.json({
       totalCommits,

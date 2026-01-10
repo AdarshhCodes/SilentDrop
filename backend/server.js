@@ -10,7 +10,6 @@ const passport = require("passport");
 
 const analysisRoutes = require("./routes/analysis");
 const auth = require("./routes/auth");
-const upload = require("./routes/upload");
 const dashboardRoutes = require("./routes/dashboard.routes")
 
 const app = express();
@@ -38,7 +37,9 @@ app.use(passport.initialize());
 app.use("/api/auth", auth);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analysis", analysisRoutes);
-app.use("/upload", upload);
+app.use("/api/trends", require("./routes/trends"));
+
+
 
 
 

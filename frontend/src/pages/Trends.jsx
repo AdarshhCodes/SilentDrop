@@ -9,9 +9,9 @@ function Trends() {
 
   useEffect(() => {
     api
-      .get("/trends", { withCredentials: true })
+      .get("/api/trends", { withCredentials: true })
       .then((res) => {
-        setData(res.data.trend);
+        setData(res.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -101,8 +101,6 @@ function Trends() {
            <NavLink to="/dashboard" className="block text-sm">
   Dashboard
 </NavLink>
-
-
       <div className="pt-2">
         <ThemeToggle />
       </div>
