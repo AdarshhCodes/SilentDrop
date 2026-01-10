@@ -175,7 +175,7 @@ function Dashboard() {
          <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-8
                 flex flex-col items-center justify-center text-center
                 transition-all duration-300 hover:scale-[1.02]">
-  <RiskMeter value={0} />
+  <RiskMeter value={data.burnoutRisk} />
 
   {/* Why this matters */}
  <p className="mt-4 text-sm text-gray-500 max-w-md opacity-0 animate-fadeIn">
@@ -195,7 +195,7 @@ function Dashboard() {
             </h3>
 
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {getInsight(0)}
+              {getInsight(data.burnoutRisk)}
             </p>
 
             <div className="grid grid-cols-2 gap-6">
