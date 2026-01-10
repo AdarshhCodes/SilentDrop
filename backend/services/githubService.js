@@ -75,5 +75,65 @@ async function fetchCommitActivity(username) {
   pendingRequests.set(username, requestPromise);
   return requestPromise;
 }
+/**
+  Fetch RAW commits with timestamps
+ Patterns aur Analysis page ke liye
+ */
+async function fetchRawCommits(username) {
+  const allCommits = [];
+  const seenShas = new Set();
 
-module.exports = { fetchCommitActivity };
+  try {
+    // Fetch user repos (increase per_page for accuracy)
+    const reposRes = await githubApi.get(
+      `/users/${username}/repos`,
+      { params: { per_page: 10 } }
+    );
+
+    for (const repo of reposRes.data) {
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        const commitsRes = await githubApi.get(
+          `/repos/${username}/${repo.name}/commits`,
+          {
+            params: {
+              per_page: 30,
+              page,
+            },
+          }
+        );
+
+        if (commitsRes.data.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        commitsRes.data.forEach(commit => {
+          // Avoid duplicates across repos/pages
+          if (!seenShas.has(commit.sha)) {
+            seenShas.add(commit.sha);
+            allCommits.push(commit);
+          }
+        });
+
+        page++;
+        // Safety break (rate-limit protection)
+        if (page > 3) break;
+      }
+    }
+
+    return allCommits;
+
+  } catch (error) {
+    console.error("GitHub RAW commit fetch error:");
+    console.error("Status:", error.response?.status);
+    console.error("Message:", error.response?.data?.message);
+    throw error;
+  }
+}
+
+
+
+module.exports = { fetchCommitActivity , fetchRawCommits };
