@@ -36,7 +36,7 @@ const calculateBurnoutScore = (commitsByDate) => {
 };
 // 🔹 Daily burnout (used for dashboard & trends)
 const calculateTodayBurnout = (totalCommits) => {
-   if (commits === 0) return 0;
+   if (totalCommits === 0) return 0;
 
   // Very light work
   if (totalCommits <= 4) return 10;
