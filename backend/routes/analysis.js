@@ -6,7 +6,7 @@ const { ANALYSIS_DAYS_WINDOW } = require("../constants/analysisWindow");
 const { getISTHour, getISTDay } = require("../utils/time");
 
 const { fetchRawCommits } = require("../services/githubService");
-const { upsertDailySnapshot} = require("../services/snapshotService");
+
 const {calculateTodayBurnout} = require("../services/burnoutService");
 
 router.get("/", auth, async (req, res) => {
@@ -78,22 +78,6 @@ if (totalCommits >= 50) {
   peakHour = hourHistogram.findIndex((c) => c > 0);
 }
     const burnoutRisk =calculateTodayBurnout(totalCommits);
- 
-    await upsertDailySnapshot({
-  userId: req.user._id,
-  analysis: {
-    burnoutRisk,
-    totalCommits,
-    pattern: {
-      lateNightPercentage:
-        totalCommits === 0 ? 0 : Math.round((lateNightCommits / totalCommits) * 100),
-      weekendPercentage:
-        totalCommits === 0 ? 0 : Math.round((weekendCommits / totalCommits) * 100),
-      confidence,
-    },
-  },
-});
-
 
     res.json({
       totalCommits,
