@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import MiniTrendChart from "../components/MiniTrendChart";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 function Trends() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -27,50 +28,49 @@ function Trends() {
     );
   }
 
-  const latest = data[data.length - 1]?.risk || 0;
-  const previous = data[data.length - 2]?.risk || latest;
+  const latest = data?.latestRisk ?? 0;
+  const previous = data?.previousRisk ?? latest;
+  const direction = data?.direction ?? "Stable";
+  const history = Array.isArray(data?.history) ? data.history : [];
 
-  let direction = "Stable";
-  if (latest > previous) direction = "Worsening";
-  if (latest < previous) direction = "Improving";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black
                     text-gray-900 dark:text-gray-100">
       {/* Navbar */}
-<div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
-  <div className="flex justify-between items-center">
-    <h1 className="text-xl font-bold">
-      SilentDrop
-    </h1>
+      <div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-bold">
+            SilentDrop
+          </h1>
 
-    {/* Desktop Nav */}
-    <div className="hidden md:flex items-center gap-6">
-      <NavLink to="/patterns"
-         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-        Patterns
-      </NavLink>
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
+            <NavLink to="/patterns"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+              Patterns
+            </NavLink>
 
-      <NavLink to="/trends"
-         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-        Trends
-      </NavLink>
+            <NavLink to="/trends"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+              Trends
+            </NavLink>
 
-      <NavLink to="/reflection"
-         className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
-        Reflection
-      </NavLink>
-       <NavLink
-  to="/dashboard"
-  className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
->
-  Dashboard
-</NavLink>
+            <NavLink to="/reflection"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:underline">
+              Reflection
+            </NavLink>
+            <NavLink
+              to="/dashboard"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
+            >
+              Dashboard
+            </NavLink>
 
 
-      <ThemeToggle />
-   
-      <button
+            <ThemeToggle />
+
+            <button
               onClick={() => {
                 localStorage.removeItem("token");
                 window.location.replace("/");
@@ -80,93 +80,97 @@ function Trends() {
             >
               Sign out
             </button>
-    </div>
+          </div>
 
-    {/* Mobile Menu Button */}
-    <button
-      className="md:hidden text-2xl"
-      onClick={() => setMenuOpen(!menuOpen)}
-    >
-      ☰
-    </button>
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-2xl"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            ☰
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="md:hidden mt-4 space-y-4
+                    border-t border-gray-200 dark:border-gray-700 pt-4">
+            <NavLink to="/patterns" className="block text-sm">Patterns</NavLink>
+            <NavLink to="/trends" className="block text-sm">Trends</NavLink>
+            <NavLink to="/reflection" className="block text-sm">Reflection</NavLink>
+            <NavLink to="/dashboard" className="block text-sm">
+              Dashboard
+            </NavLink>
+            <div className="pt-2">
+              <ThemeToggle />
+            </div>
+
+            <button
+              onClick={() => {
+                api.get("/api/auth/logout", { withCredentials: true }).then(() => {
+                  localStorage.clear();
+                  window.location.replace("/");
+                });
+              }}
+              className="block text-sm text-red-500"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
+      </div>
+
+{/* Content */}
+<div className="max-w-6xl mx-auto px-6 py-10 fade-in">
+  <h2 className="text-2xl font-semibold mb-8">
+    Burnout Trends
+  </h2>
+
+  {/* Summary cards */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+    <TrendCard title="Latest Risk" value={`${latest}%`} />
+    <TrendCard title="Previous Risk" value={`${previous}%`} />
+    <TrendCard title="Direction" value={direction} />
   </div>
 
-  {/* Mobile Menu */}
-  {menuOpen && (
-    <div className="md:hidden mt-4 space-y-4
-                    border-t border-gray-200 dark:border-gray-700 pt-4">
-        <NavLink to="/patterns" className="block text-sm">Patterns</NavLink>
-           <NavLink to="/trends" className="block text-sm">Trends</NavLink>
-           <NavLink to="/reflection" className="block text-sm">Reflection</NavLink>
-           <NavLink to="/dashboard" className="block text-sm">
-  Dashboard
-</NavLink>
-      <div className="pt-2">
-        <ThemeToggle />
-      </div>
+  {/* Mini trend chart */}
+  <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 mb-10">
+    <h3 className="font-semibold mb-4">Burnout trend</h3>
 
-      <button
-        onClick={() => {
-          api.get("/api/auth/logout", { withCredentials: true }).then(() => {
-            localStorage.clear();
-            window.location.replace("/");
-          });
-        }}
-        className="block text-sm text-red-500"
-      >
-        Sign out
-      </button>
-    </div>
-  )}
+    <MiniTrendChart data={history} />
+
+    <p className="text-xs text-gray-400 mt-2">
+      Based on daily burnout snapshots
+    </p>
+  </div>
+
+  {/* Recent history */}
+  <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6">
+    <h3 className="font-semibold mb-4">
+      Recent History
+    </h3>
+
+    <ul className="space-y-3 text-sm">
+      {history.map((item) => (
+        <li
+          key={item.date}
+          className="flex justify-between border-b
+                     border-gray-200 dark:border-gray-700 pb-2"
+        >
+          <span>{item.date}</span>
+          <span className="font-medium">
+            {item.burnoutRisk}%
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <p className="text-xs text-gray-400 mt-6">
+    Trends are derived from recent coding behavior and activity timing.
+  </p>
 </div>
 
-
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-10 fade-in">
-        <h2 className="text-2xl font-semibold mb-8">
-          Burnout Trends
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <TrendCard title="Latest Risk" value={`${latest}%`} />
-          <TrendCard title="Previous Risk" value={`${previous}%`} />
-          <TrendCard
-            title="Direction"
-            value={
-              direction === "Improving"
-                ? "Improving"
-                : direction === "Worsening"
-                ? "Worsening"
-                : "Stable"
-            }
-          />
-        </div>
-
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6">
-          <h3 className="font-semibold mb-4">
-            Recent History
-          </h3>
-
-          <ul className="space-y-3 text-sm">
-            {data.map((item) => (
-              <li
-                key={item.date}
-                className="flex justify-between border-b
-                           border-gray-200 dark:border-gray-700 pb-2"
-              >
-                <span>{item.date}</span>
-                <span className="font-medium">
-                  {item.risk}%
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p className="text-xs text-gray-400 mt-6">
-          Trends are derived from recent coding behavior and activity timing.
-        </p>
-      </div>
     </div>
   );
 }
