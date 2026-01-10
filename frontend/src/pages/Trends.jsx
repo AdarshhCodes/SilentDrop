@@ -27,30 +27,34 @@ function getBarColor(value) {
   return "bg-green-400";
 }
 
-/* ------------------ components ------------------ */
+/* ------------------ UI components ------------------ */
 
 function TrendCard({ title, value }) {
   return (
-    <div className="bg-gray-900 rounded-xl p-6 transition-all hover:scale-[1.02]">
+    <div className="bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:scale-[1.02]">
       <p className="text-sm text-gray-400">{title}</p>
       <p className="text-2xl font-bold mt-2">{value}</p>
     </div>
   );
 }
 
-function MiniTrendBar({ label, value }) {
+function MiniTrendBar({ label, value, index, animate }) {
   return (
     <div className="flex items-center gap-3">
       <span className="w-12 text-xs text-gray-400">{label}</span>
 
-      <div className="flex-1 bg-gray-800 rounded h-2 overflow-hidden">
+      <div className="flex-1 h-2 bg-gray-800 rounded overflow-hidden">
         <div
-          className={`h-2 ${getBarColor(value)}`}
-          style={{ width: `${value}%` }}
+          className={`h-full ${getBarColor(value)}
+                      transition-all duration-700 ease-out`}
+          style={{
+            width: animate ? `${value}%` : "0%",
+            transitionDelay: `${index * 90}ms`,
+          }}
         />
       </div>
 
-      <span className="w-10 text-xs text-right text-gray-300">
+      <span className="w-10 text-right text-xs text-gray-300">
         {value}%
       </span>
     </div>
@@ -63,11 +67,14 @@ function Trends() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [animateBars, setAnimateBars] = useState(false);
 
   useEffect(() => {
-    api
-      .get("/api/analysis")
-      .then((res) => setAnalysis(res.data))
+    api.get("/api/analysis")
+      .then((res) => {
+        setAnalysis(res.data);
+        requestAnimationFrame(() => setAnimateBars(true));
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -135,14 +142,14 @@ function Trends() {
       <div className="max-w-6xl mx-auto px-6 py-10">
         <h2 className="text-2xl font-semibold mb-8">Burnout Trends</h2>
 
-        {/* Cards */}
+        {/* Summary cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <TrendCard title="Latest Risk" value={`${latestRisk}%`} />
           <TrendCard title="Previous Risk" value={`${previousRisk}%`} />
           <TrendCard title="Direction" value={direction} />
         </div>
 
-        {/* Activity */}
+        {/* Recent Activity */}
         <div className="bg-gray-900 rounded-xl p-6 md:p-8">
           <h3 className="font-semibold mb-4">Recent Activity Pattern</h3>
 
@@ -152,11 +159,13 @@ function Trends() {
             </p>
           ) : (
             <div className="space-y-3">
-              {history.map((h) => (
+              {history.map((h, index) => (
                 <MiniTrendBar
                   key={h.hour}
                   label={formatHourLabel(h.hour)}
                   value={h.risk}
+                  index={index}
+                  animate={animateBars}
                 />
               ))}
             </div>
