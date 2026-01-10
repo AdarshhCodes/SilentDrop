@@ -74,6 +74,9 @@ if (totalCommits >= 50) {
         peakHour = hour;
       }
     });
+    if (totalCommits > 0 && peakHour === null) {
+  peakHour = hourHistogram.findIndex((c) => c > 0);
+}
     const burnoutRisk =calculateTodayBurnout(totalCommits);
  
     await upsertDailySnapshot({

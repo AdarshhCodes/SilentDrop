@@ -159,7 +159,8 @@ function Patterns() {
           <PatternInsight
             title="Most active time"
             text={
-              pattern.mostActiveHour !== null
+             pattern.hourHistogram.some(c => c > 0)
+
                 ? `You tend to be most active around ${formatHour(pattern.mostActiveHour)}.`
                 : "There isn’t enough data yet to find a consistent active time."
             }
