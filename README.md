@@ -91,6 +91,8 @@ GITHUB_CLIENT_ID=your_client_id
 GITHUB_CLIENT_SECRET=your_client_secret
 SESSION_SECRET=your_session_secret
 MONGODB_URI=your_mongodb_uri
+GITHUB_TOKEN=your_github_token
+
 
 ### 4️⃣ Run the app
 
