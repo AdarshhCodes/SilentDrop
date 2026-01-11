@@ -15,21 +15,27 @@ const dashboardRoutes = require("./routes/dashboard.routes")
 const app = express();
 app.set("trust proxy", 1);
 const allowedOrigins = [
-   "https://silent-drop.vercel.app/",
+   "https://silent-drop.vercel.app",
   "https://silentdrop-frontend.onrender.com",
  
 ];
-
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+    // allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     } else {
-      callback(new Error("CORS not allowed"));
+      return callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+
 }));
+
 
 app.use(express.json());
 app.use(session({
