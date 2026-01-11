@@ -15,8 +15,9 @@ const dashboardRoutes = require("./routes/dashboard.routes")
 const app = express();
 app.set("trust proxy", 1);
 const allowedOrigins = [
+   "https://silent-drop.vercel.app/",
   "https://silentdrop-frontend.onrender.com",
-  "https://silent-drop.vercel.app/"
+ 
 ];
 
 app.use(cors({
