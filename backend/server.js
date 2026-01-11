@@ -14,12 +14,22 @@ const dashboardRoutes = require("./routes/dashboard.routes")
 
 const app = express();
 app.set("trust proxy", 1);
-app.use(
-  cors({
-    origin: "https://silentdrop-frontend.onrender.com",
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "https://silentdrop-frontend.onrender.com",
+  "https://silent-drop.vercel.app/"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(session({
   secret: process.env.SESSION_SECRET,
