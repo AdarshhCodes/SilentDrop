@@ -15,20 +15,22 @@ router.get(
 );
 
 // GitHub callback → JWT
+// GitHub callback → JWT
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "https://silentdrop-frontend.onrender.com",
+    failureRedirect: "https://silent-drop.vercel.app",
     session: false,
   }),
   (req, res) => {
     const token = signToken(req.user);
 
     res.redirect(
-      `https://silentdrop-frontend.onrender.com/auth-success?token=${token}`
+      `https://silent-drop.vercel.app/auth-success?token=${token}`
     );
   }
 );
+
 
 // JWT test route
 router.get("/me", auth, (req, res) => {

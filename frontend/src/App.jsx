@@ -5,7 +5,19 @@ import Patterns from "./pages/Patterns";
 import Trends from "./pages/Trends";
 import Reflection from "./pages/Reflection";
 import AuthSuccess from "./pages/AuthSuccess";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
 function App() {
+    const location = useLocation();
+
+  useEffect(() => {
+    if (window.gtag) {
+      window.gtag("config", "G-7SGRPSL90Y", {
+        page_path: location.pathname,
+      });
+    }
+  }, [location]);
   return (
     <BrowserRouter>
       <Routes>
