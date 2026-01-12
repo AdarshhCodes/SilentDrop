@@ -5,9 +5,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 // Health check (used to wake backend)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
 
 
 require("./config/passport");
@@ -56,6 +53,10 @@ app.use(session({
      maxAge: 1000 * 60 * 60 * 24, 
   }
 }));
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use(passport.initialize());
 app.use("/api/auth", auth);
 app.use("/api/dashboard", dashboardRoutes);
