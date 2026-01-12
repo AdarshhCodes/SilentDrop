@@ -16,24 +16,45 @@ function Landing() {
     }
   }, [isLoggedIn, navigate]);
 
-  // Start GitHub OAuth
-  const handleLogin = async () => {
-    setLoading(true);
-  try {
-    // 1️⃣ Wake backend (silent)
-    await fetch("https://silentdrop-backend.onrender.com/health");
 
-    // 2️⃣ Small delay to allow boot
-    setTimeout(() => {
-      window.location.href =
-        "https://silentdrop-backend.onrender.com/api/auth/github";
-    }, 1200);
+
+  //LOad Spinner while connecting to github
+  const Spinner = () => (
+  <div className="w-5 h-5 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
+);
+
+
+  // Start GitHub OAuth
+const handleLogin = async () => {
+  if (loading) return;
+  setLoading(true);
+
+  const oauthUrl =
+    "https://silentdrop-backend.onrender.com/api/auth/github";
+
+  try {
+    // Try waking backend up to 3 times
+    for (let i = 0; i < 3; i++) {
+      const res = await fetch(
+        "https://silentdrop-backend.onrender.com/health",
+        { cache: "no-store" }
+      );
+
+      if (res.ok) break;
+
+      // wait 1.5s before retry
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+
+    // Final redirect
+    window.location.href = oauthUrl;
   } catch (err) {
-    // 3️⃣ Fallback if wake fails
-    window.location.href =
-      "https://silentdrop-backend.onrender.com/api/auth/github";
+    // Always redirect as fallback
+    window.location.href = oauthUrl;
   }
 };
+
+
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-black text-gray-900 dark:text-gray-100">
@@ -67,8 +88,7 @@ function Landing() {
             SilentDrop analyzes your GitHub activity to gently detect burnout risk —
             without notifications, without pressure.
           </p>
-
-    <button
+<button
   onClick={handleLogin}
   disabled={loading}
   className="
@@ -81,10 +101,13 @@ function Landing() {
     transition
     disabled:opacity-60
     disabled:cursor-not-allowed
+    flex items-center gap-2
   "
 >
+  {loading && <Spinner />}
   {loading ? "Connecting to GitHub…" : "Continue with GitHub"}
 </button>
+
 
 
 
