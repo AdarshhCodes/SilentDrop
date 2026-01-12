@@ -101,7 +101,6 @@ const handleLogin = async () => {
     transition
     disabled:opacity-60
     disabled:cursor-not-allowed
-    flex items-center gap-2
   "
 >
   {loading && <Spinner />}
