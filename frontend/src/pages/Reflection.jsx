@@ -15,7 +15,7 @@ function Reflection() {
     );
   }
 
-  const risk = data.burnoutRisk ?? 0;
+  const risk = data?.burnoutRisk ?? 0;
 
   const message =
     risk < 40

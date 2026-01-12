@@ -107,27 +107,30 @@ const handleLogin = async () => {
             SilentDrop analyzes your GitHub activity to gently detect burnout risk —
             without notifications, without pressure.
           </p>
-<button
-  onClick={handleLogin}
-  disabled={loading}
-  className="
-    px-8 py-3 rounded-xl
-    bg-black text-white
-    dark:bg-white dark:text-black
-    text-sm font-medium
-    shadow-md
-    hover:shadow-lg
-    transition
-    disabled:opacity-70
-    disabled:cursor-not-allowed
-    flex items-center justify-center gap-3
-  "
->
-  {loading && <Spinner />}
-  <span>
-    {loading ? "Connecting to GitHub…" : "Continue with GitHub"}
-  </span>
-</button>
+<div className="mt-10 flex justify-center">
+  <button
+    onClick={handleLogin}
+    disabled={loading}
+    className="
+      px-8 py-3 rounded-xl
+      bg-black text-white
+      dark:bg-white dark:text-black
+      text-sm font-medium
+      shadow-md
+      hover:shadow-lg
+      transition
+      disabled:opacity-70
+      disabled:cursor-not-allowed
+      flex items-center gap-3
+    "
+  >
+    {loading && <Spinner />}
+    <span>
+      {loading ? "Connecting to GitHub…" : "Continue with GitHub"}
+    </span>
+  </button>
+</div>
+
 
           <p className="text-xs text-gray-500 mt-4">
             Read-only GitHub access. No posts. No spam.

@@ -28,7 +28,7 @@ function Dashboard() {
     loadAppData(navigate);
   }, []);
 
-  if (loading) {
+  if (loading || !data || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center
                       bg-gray-50 dark:bg-black
@@ -140,7 +140,7 @@ function Dashboard() {
           {/* Risk Meter */}
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-8
                           flex flex-col items-center justify-center text-center">
-            <RiskMeter value={data.burnoutRisk} />
+            <RiskMeter value={data?.burnoutRisk} />
 
             <p className="mt-4 text-sm text-gray-500 max-w-md opacity-0 animate-fadeIn">
               Sustained late-night and weekend work often correlates with reduced
@@ -155,7 +155,7 @@ function Dashboard() {
             </h3>
 
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              {getInsight(data.burnoutRisk)}
+              {getInsight(data?.burnoutRisk)}
             </p>
 
             <div className="grid grid-cols-2 gap-6">
@@ -167,9 +167,9 @@ function Dashboard() {
               <div>
                 <p className="text-sm text-gray-500">Status</p>
                 <p className="text-2xl font-bold">
-                  {data.burnoutRisk < 40
+                  {data?.burnoutRisk < 40
                     ? "Healthy Rhythm"
-                    : data.burnoutRisk < 70
+                    : data?.burnoutRisk < 70
                     ? "Pushing Hard"
                     : "High Strain"}
                 </p>
