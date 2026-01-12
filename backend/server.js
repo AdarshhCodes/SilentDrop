@@ -4,6 +4,12 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 
+// Health check (used to wake backend)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+
 require("./config/passport");
 const session = require("express-session");
 const passport = require("passport");

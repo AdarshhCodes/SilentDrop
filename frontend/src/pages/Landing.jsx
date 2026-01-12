@@ -2,8 +2,10 @@
 import { useEffect } from "react";
 import ThemeToggle from "../components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Landing() {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
 
@@ -15,10 +17,23 @@ function Landing() {
   }, [isLoggedIn, navigate]);
 
   // Start GitHub OAuth
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    setLoading(true);
+  try {
+    // 1️⃣ Wake backend (silent)
+    await fetch("https://silentdrop-backend.onrender.com/health");
+
+    // 2️⃣ Small delay to allow boot
+    setTimeout(() => {
+      window.location.href =
+        "https://silentdrop-backend.onrender.com/api/auth/github";
+    }, 1200);
+  } catch (err) {
+    // 3️⃣ Fallback if wake fails
     window.location.href =
       "https://silentdrop-backend.onrender.com/api/auth/github";
-  };
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-black text-gray-900 dark:text-gray-100">
@@ -53,8 +68,9 @@ function Landing() {
             without notifications, without pressure.
           </p>
 
-        <button
+    <button
   onClick={handleLogin}
+  disabled={loading}
   className="
     px-8 py-3 rounded-xl
     bg-black text-white
@@ -63,10 +79,13 @@ function Landing() {
     shadow-md
     hover:shadow-lg
     transition
+    disabled:opacity-60
+    disabled:cursor-not-allowed
   "
 >
-  Continue with GitHub
+  {loading ? "Connecting to GitHub…" : "Continue with GitHub"}
 </button>
+
 
 
           <p className="text-xs text-gray-500 mt-4">
