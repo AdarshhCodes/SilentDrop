@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
-import { NavLink } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query"
 
 function Reflection() {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  
   const { data, isLoading, isError } = useQuery({
     queryKey: ["analysis"],
     queryFn: () =>
@@ -36,6 +36,7 @@ function Reflection() {
   /* ---------------------------
      Context-aware reflection
   ---------------------------- */
+  const risk = data.burnoutRisk ?? 0;
   const message =
     risk < 40
       ? {
