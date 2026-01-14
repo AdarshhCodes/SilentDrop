@@ -27,7 +27,7 @@ function Dashboard() {
       };
     },
     staleTime: 1000 * 60 * 5,
-    retry: false, // IMPORTANT: stop infinite 401 retries
+    retry: false, //stop infinite 401 retries
   });
 
   useEffect(() => {
@@ -111,10 +111,15 @@ function Dashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-10">
+      <div className="max-w-6xl mx-auto px-6 py-10 fade-in">
         <h2 className="text-2xl font-semibold mb-2">
           Your Work Rhythm Today
         </h2>
+
+        <p className="text-sm text-gray-500 mb-8">
+          A gental snapshot of how your coding day looked.
+
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-8 text-center">
@@ -152,6 +157,8 @@ function Dashboard() {
             </div>
           </div>
         </div>
+<div className="text-center text-sm text-gray-400"> More insights coming soon… </div>
+
       </div>
     </div>
   );
