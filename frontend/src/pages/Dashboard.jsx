@@ -157,7 +157,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-<div className="text-center text-sm text-gray-400"> More insights coming soon… </div>
+<div className="text-center text-sm text-gray-400 mt-7"> More insights coming soon… </div>
 
       </div>
     </div>
