@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
+import {useQuery} from "@tanstack/react-query";
+
+
 
 function formatHour(hour) {
   if (hour === null || hour === undefined) return "—";
@@ -22,30 +25,37 @@ function getHeatColor(count, max) {
 }
 
 function Patterns() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(false);
 
-  useEffect(() => {
-    api
-      .get("/api/analysis")
-      .then((res) => {
-        setData(res.data);
-        setTimeout(() => setShowHeatmap(true), 100); // subtle delay
-      })
-      .catch((err) => console.error("Patterns error", err))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["analysis"],
+    queryFn: () =>
+      api.get("/api/analysis").then((res) => res.data),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  if (loading) {
+  useEffect(() => {
+    if (data) {
+      setTimeout(() => setShowHeatmap(true), 100);
+    }
+  }, [data]);
+
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
         Loading patterns…
       </div>
     );
   }
-
+  
+  if (isError || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
+        Failed to load patterns.
+      </div>
+    );
+  }
   const pattern = data?.pattern || {
     mostActiveHour: null,
     lateNightPercentage: 0,

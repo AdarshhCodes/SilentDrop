@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 /* ------------------ helpers ------------------ */
 
@@ -31,9 +32,13 @@ function getBarColor(value) {
 
 function TrendCard({ title, value }) {
   return (
-    <div className="bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:scale-[1.02]">
-      <p className="text-sm text-gray-400">{title}</p>
-      <p className="text-2xl font-bold mt-2">{value}</p>
+    <div className="bg-white dark:bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:scale-[1.02]">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {title}
+      </p>
+      <p className="text-2xl font-bold mt-2 text-gray-900 dark:text-gray-100">
+        {value}
+      </p>
     </div>
   );
 }
@@ -41,9 +46,11 @@ function TrendCard({ title, value }) {
 function MiniTrendBar({ label, value, index, animate }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="w-12 text-xs text-gray-400">{label}</span>
+      <span className="w-12 text-xs text-gray-500 dark:text-gray-400">
+        {label}
+      </span>
 
-      <div className="flex-1 h-2 bg-gray-800 rounded overflow-hidden">
+      <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
         <div
           className={`h-full ${getBarColor(value)} transition-all duration-700 ease-out`}
           style={{
@@ -53,7 +60,7 @@ function MiniTrendBar({ label, value, index, animate }) {
         />
       </div>
 
-      <span className="w-10 text-right text-xs text-gray-300">
+      <span className="w-10 text-right text-xs text-gray-600 dark:text-gray-300">
         {value}%
       </span>
     </div>
@@ -63,22 +70,22 @@ function MiniTrendBar({ label, value, index, animate }) {
 /* ------------------ page ------------------ */
 
 function Trends() {
-  const [analysis, setAnalysis] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [animateBars, setAnimateBars] = useState(false);
 
-  useEffect(() => {
-    api
-      .get("/api/analysis")
-      .then((res) => {
-        setAnalysis(res.data);
-        requestAnimationFrame(() => setAnimateBars(true));
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["analysis"],
+    queryFn: () => api.get("/api/analysis").then((res) => res.data),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  if (loading || !analysis) {
+  useEffect(() => {
+    if (data) {
+      requestAnimationFrame(() => setAnimateBars(true));
+    }
+  }, [data]);
+
+  if (isLoading || !data) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
         Loading trends…
@@ -86,7 +93,15 @@ function Trends() {
     );
   }
 
-  const { totalCommits, pattern } = analysis;
+  if (isError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
+        Failed to load trends.
+      </div>
+    );
+  }
+
+  const { totalCommits, pattern } = data;
 
   const latestRisk = calculateRisk({
     totalCommits,
@@ -109,9 +124,9 @@ function Trends() {
     .slice(-6);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-100">
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
       {/* Navbar */}
-      <div className="bg-gray-900 px-6 py-4 flex justify-between items-center">
+      <div className="bg-white dark:bg-gray-900 px-6 py-4 flex justify-between items-center shadow-sm">
         <h1 className="text-xl font-bold">SilentDrop</h1>
 
         <div className="hidden md:flex gap-6 items-center">
@@ -132,7 +147,7 @@ function Trends() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-gray-900 px-6 py-4 space-y-3">
+        <div className="md:hidden bg-white dark:bg-gray-900 px-6 py-4 space-y-3">
           <NavLink to="/patterns" className="block">
             Patterns
           </NavLink>
@@ -148,21 +163,23 @@ function Trends() {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <h2 className="text-2xl font-semibold mb-8">Burnout Trends</h2>
+        <h2 className="text-2xl font-semibold mb-8">
+          Burnout Trends
+        </h2>
 
-        {/* Summary cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <TrendCard title="Latest Risk" value={`${latestRisk}%`} />
           <TrendCard title="Previous Risk" value={`${previousRisk}%`} />
           <TrendCard title="Direction" value={direction} />
         </div>
 
-        {/* Recent Activity */}
-        <div className="bg-gray-900 rounded-xl p-6 md:p-8">
-          <h3 className="font-semibold mb-4">Recent Activity Pattern</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow">
+          <h3 className="font-semibold mb-4">
+            Recent Activity Pattern
+          </h3>
 
           {history.length === 0 ? (
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Not enough recent activity to show a trend.
             </p>
           ) : (
@@ -180,7 +197,7 @@ function Trends() {
           )}
         </div>
 
-        <p className="text-xs text-gray-400 mt-6">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-6">
           Trends are derived from your recent coding patterns and activity timing.
         </p>
       </div>

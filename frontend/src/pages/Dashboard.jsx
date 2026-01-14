@@ -3,53 +3,29 @@ import api from "../api";
 import RiskMeter from "../components/RiskMeter";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Dashboard() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: () =>
+      api.get("/api/dashboard").then(res => res.data),
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    queryClient.prefetchQuery({
+      queryKey: ["analysis"],
+      queryFn: () =>
+        api.get("/api/analysis").then(res => res.data),
+      staleTime: 1000 * 60 * 5,
+    });
+  }, [queryClient]);
 
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
-
-    const fetchData = async () => {
-      try {
-        // First check authentication
-        const userRes = await api.get("/api/auth/me");
-        setUser(userRes.data.user);
-
-        // Then fetch analysis data
-        const analysisRes = await api.get("/api/dashboard");
-        setData(analysisRes.data);
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Dashboard error:", err);
-
-        if (err.response?.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/");
-        } else {
-          setError("Something went wrong. Please refresh.");
-        }
-
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [navigate]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center
                       bg-gray-50 dark:bg-black
@@ -59,7 +35,7 @@ function Dashboard() {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="min-h-screen flex items-center justify-center
                       bg-gray-50 dark:bg-black

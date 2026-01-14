@@ -2,33 +2,36 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink } from "react-router-dom";
+import {useQuery} from "@tanstack/react-query"
 
 function Reflection() {
-  const [risk, setRisk] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    api
-      .get("/api/analysis", { withCredentials: true })
-      .then((res) => {
-        setRisk(res.data.burnoutRisk ?? 0);
-      })
-      .catch((err) => {
-        console.error("Reflection error", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["analysis"],
+    queryFn: () =>
+      api.get("/api/analysis", { withCredentials: true }).then(
+        (res) => res.data
+      ),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
         Loading reflection…
       </div>
     );
   }
+  
+  if (isError || !data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+        Failed to load reflection.
+      </div>
+    );
+  }
+
 
   /* ---------------------------
      Context-aware reflection
