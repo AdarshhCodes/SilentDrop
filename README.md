@@ -64,7 +64,7 @@ when you work, how often you push late nights or weekends, and whether your rece
 
 ### Infrastructure
 
-* Frontend: Render
+* Frontend: Render/Vercel
 * Backend: Render
 * Database: MongoDB Atlas
 
