@@ -7,14 +7,14 @@ import { useState } from "react";
 function Landing() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const isLoggedIn = !!localStorage.getItem("token");
+  // const isLoggedIn = !!localStorage.getItem("token");
 
   // Redirect logged-in users to dashboard
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/dashboard");
-    }
-  }, [isLoggedIn, navigate]);
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [isLoggedIn, navigate]);
 
 
 
