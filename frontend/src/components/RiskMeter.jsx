@@ -39,11 +39,11 @@ function RiskMeter({ value }) {
   const strokeDashoffset =
     circumference - (animatedValue / 100) * circumference;
 
-  let color = "stroke-green-500";
+  let color = "stroke-indigo-400 dark:stroke-indigo-300";
 if (value >= 70) {
-  color = "stroke-red-500";
+  color = "stroke-indigo-800 dark:stroke-indigo-700";
 } else if (value >= 40) {
-  color = "stroke-yellow-400";
+  color = "stroke-indigo-600 dark:stroke-indigo-500";
 }
 
 

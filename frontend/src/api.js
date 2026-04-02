@@ -1,8 +1,7 @@
-
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://silentdrop-backend.onrender.com" ,
+  baseURL: "https://silentdrop-backend.onrender.com",
 });
 
 api.interceptors.request.use((config) => {
@@ -14,6 +13,3 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
-
-
-

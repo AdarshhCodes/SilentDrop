@@ -13,7 +13,9 @@ const passport = require("passport");
 
 const analysisRoutes = require("./routes/analysis");
 const auth = require("./routes/auth");
-const dashboardRoutes = require("./routes/dashboard.routes")
+const dashboardRoutes = require("./routes/dashboard.routes");
+const userRoutes = require("./routes/user.routes");
+const reflectionRoutes = require("./routes/reflection.routes");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -61,6 +63,8 @@ app.use(passport.initialize());
 app.use("/api/auth", auth);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/analysis", analysisRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/reflections", reflectionRoutes);
 
 
 

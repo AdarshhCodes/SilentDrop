@@ -19,14 +19,15 @@ router.get(
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: "https://silent-drop.vercel.app",
+    failureRedirect: process.env.FRONTEND_URL || "https://silent-drop.vercel.app",
     session: false,
   }),
   (req, res) => {
     const token = signToken(req.user);
+    const frontendUrl = process.env.FRONTEND_URL || "https://silent-drop.vercel.app";
 
     res.redirect(
-      `https://silent-drop.vercel.app/auth-success?token=${token}`
+      `${frontendUrl}/auth-success?token=${token}`
     );
   }
 );

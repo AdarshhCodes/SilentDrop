@@ -1,37 +1,28 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import api from "../api";
-import ThemeToggle from "../components/ThemeToggle";
-import { NavLink} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query"
+import { motion } from "framer-motion";
 
-function Reflection() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.15 } }
+};
+
+const itemAnim = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 250, damping: 25 } }
+};
+
+export default function Reflection() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["analysis"],
-    queryFn: () =>
-      api.get("/api/analysis", { withCredentials: true }).then(
-        (res) => res.data
-      ),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    queryFn: async () => {
+      return api.get("/api/analysis", { withCredentials: true }).then((res) => res.data);
+    },
+    staleTime: 1000 * 60 * 5,
   });
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-        Loading reflection…
-      </div>
-    );
-  }
-  
-  if (isError || !data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-        Failed to load reflection.
-      </div>
-    );
-  }
-
+  if (isLoading) return <div className="flex justify-center py-20 text-slate-500">Loading reflection metrics…</div>;
+  if (isError || !data) return <div className="flex justify-center py-20 text-red-500">Failed to load reflection telemetry.</div>;
 
   /* ---------------------------
      Context-aware reflection
@@ -40,20 +31,20 @@ function Reflection() {
   const message =
     risk < 40
       ? {
-          title: "You’re doing well",
-          text: "Your work rhythm looks balanced. Protect what’s working.",
-          prompt: "What habit has helped you stay steady recently?",
+          title: "System Nominal",
+          text: "Your telemetry looks balanced. High integrity detected.",
+          prompt: "What habit has reinforced your baseline recently?",
         }
       : risk < 70
       ? {
-          title: "Pause and notice",
-          text: "You’ve been carrying a steady load lately. Awareness is care.",
-          prompt: "Is there something you could ease this week?",
+          title: "Elevated Load",
+          text: "You've sustained a high operational tempo. Awareness mitigates fatigue.",
+          prompt: "What processes could you temporarily suspend to regain bandwidth?",
         }
       : {
-          title: "Be kind to yourself",
-          text: "Your patterns suggest high strain. Rest is not a weakness — it’s maintenance.",
-          prompt: "What would rest look like for you right now?",
+          title: "Critical Threshold",
+          text: "Metrics indicate compound stress. De-escalation and offline recovery are highly recommended.",
+          prompt: "What does immediate offline recovery look like today?",
         };
 
   /* ---------------------------
@@ -62,130 +53,53 @@ function Reflection() {
   const hour = new Date().getHours();
   const timeNote =
     hour >= 22
-      ? "It’s late. Rest now supports tomorrow more than one more push."
+      ? "It's late. Forced shutdown is more optimal for tomorrow's performance than continuing."
       : hour < 9
-      ? "A calm start sets the tone for the day."
-      : "You don’t have to do everything today.";
+      ? "A calculated boot sequence sets the efficiency for the day."
+      : "Not every task requires immediate processing. Queue the non-essentials.";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-      {/* Navbar */}
-      <div className="bg-white dark:bg-gray-900 shadow-sm px-6 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">SilentDrop</h1>
-
-          <div className="hidden md:flex items-center gap-6">
-            <NavLink to="/patterns" className="text-sm hover:underline">
-              Patterns
-            </NavLink>
-            <NavLink to="/trends" className="text-sm hover:underline">
-              Trends
-            </NavLink>
-            <NavLink
-              to="/reflection"
-              className="text-sm font-medium underline"
-            >
-              Reflection
-            </NavLink>
-            <NavLink to="/dashboard" className="text-sm hover:underline">
-              Dashboard
-            </NavLink>
-
-            <ThemeToggle />
-
-            <button
-              onClick={() => {
-                localStorage.removeItem("token");
-                window.location.replace("/");
-              }}
-              className="text-sm text-red-500 hover:underline"
-            >
-              Sign out
-            </button>
-          </div>
-
-          <button
-            className="md:hidden text-2xl"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            ☰
-          </button>
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-2xl mx-auto w-full pt-10 pb-20">
+      
+      <motion.div variants={itemAnim} className="text-center mb-12">
+        <div className="inline-block px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-widest mb-6">
+          Diagnostic Module
         </div>
-
-        {menuOpen && (
-          <div className="md:hidden mt-4 space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
-            <NavLink to="/patterns" className="block text-sm">
-              Patterns
-            </NavLink>
-            <NavLink to="/trends" className="block text-sm">
-              Trends
-            </NavLink>
-            <NavLink
-              to="/reflection"
-              className="block text-sm font-medium"
-            >
-              Reflection
-            </NavLink>
-            <NavLink to="/dashboard" className="block text-sm">
-              Dashboard
-            </NavLink>
-
-            <ThemeToggle />
-
-            <button
-              onClick={() => {
-                localStorage.removeItem("token");
-                window.location.replace("/");
-              }}
-              className="block text-sm text-red-500"
-            >
-              Sign out
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="max-w-3xl mx-auto px-6 py-24 text-center fade-in">
-        <h2 className="text-3xl font-semibold mb-3">
+        <h2 className="text-4xl font-light tracking-tight text-slate-900 dark:text-slate-100 mb-4">
           {message.title}
         </h2>
-
-        <p className="text-sm text-gray-500 mb-8">
-          Take a quiet moment to reflect on your day.
-        </p>
-
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
+        <p className="text-xl text-slate-500 dark:text-slate-400 font-light max-w-lg mx-auto leading-relaxed">
           {message.text}
         </p>
+      </motion.div>
 
-        {/* Reflection Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-8 text-left max-w-xl mx-auto border border-gray-100 dark:border-gray-800">
-          <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
-            Reflection prompt
-          </p>
+      {/* Reflection Card */}
+      <motion.div variants={itemAnim} className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 md:p-10 relative overflow-hidden group hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors duration-500">
+        
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-          <p className="text-base mb-4">{message.prompt}</p>
-
-          <textarea
-            placeholder="You can write here — nothing is saved."
-            rows={4}
-            className="w-full p-3 rounded-lg bg-gray-50 dark:bg-black
-                       border border-gray-200 dark:border-gray-700
-                       text-sm text-gray-700 dark:text-gray-300
-                       focus:outline-none focus:border-gray-400 dark:focus:border-gray-500"
-          />
-        </div>
-
-        {/* Time whisper */}
-        <p className="text-xs text-gray-500 mt-8">{timeNote}</p>
-
-        <p className="text-xs text-gray-400 mt-10">
-          SilentDrop never judges. It only reflects.
+        <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">
+          Interactive Prompt
         </p>
-      </div>
-    </div>
+
+        <p className="text-lg text-slate-800 dark:text-slate-200 mb-6 font-medium">
+          {message.prompt}
+        </p>
+
+        <textarea
+          placeholder="Jot down a fleeting thought here... (Ephemeral, not persisted to DB)"
+          rows={5}
+          className="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none font-mono"
+        />
+      </motion.div>
+
+      <motion.div variants={itemAnim} className="mt-12 text-center space-y-4">
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{timeNote}</p>
+        <p className="text-xs text-slate-400/60 uppercase tracking-widest font-bold">
+          SilentDrop does not judge. It only reflects.
+        </p>
+      </motion.div>
+
+    </motion.div>
   );
 }
-
-export default Reflection;

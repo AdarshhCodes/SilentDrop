@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api";
-import ThemeToggle from "../components/ThemeToggle";
-import { NavLink } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-
-/* ------------------ helpers ------------------ */
+import { motion } from "framer-motion";
 
 function calculateRisk({ totalCommits, lateNight, weekend }) {
   let risk = 0;
@@ -21,85 +18,42 @@ function formatHourLabel(hour) {
   return `${normalized} ${suffix}`;
 }
 
-function getBarColor(value) {
-  if (value >= 70) return "bg-red-500";
-  if (value >= 50) return "bg-orange-400";
-  if (value >= 30) return "bg-yellow-400";
-  return "bg-green-400";
+function getBarOpcaity(value) {
+  if (value >= 70) return "bg-indigo-700 dark:bg-indigo-400";
+  if (value >= 50) return "bg-indigo-500 dark:bg-indigo-500";
+  if (value >= 30) return "bg-indigo-400 dark:bg-indigo-600";
+  return "bg-indigo-300 dark:bg-indigo-800";
 }
 
-/* ------------------ UI components ------------------ */
+const container = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
 
-function TrendCard({ title, value }) {
-  return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:scale-[1.02]">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        {title}
-      </p>
-      <p className="text-2xl font-bold mt-2 text-gray-900 dark:text-gray-100">
-        {value}
-      </p>
-    </div>
-  );
-}
+const itemAnim = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
-function MiniTrendBar({ label, value, index, animate }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="w-12 text-xs text-gray-500 dark:text-gray-400">
-        {label}
-      </span>
-
-      <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
-        <div
-          className={`h-full ${getBarColor(value)} transition-all duration-700 ease-out`}
-          style={{
-            width: animate ? `${value}%` : "0%",
-            transitionDelay: `${index * 90}ms`,
-          }}
-        />
-      </div>
-
-      <span className="w-10 text-right text-xs text-gray-600 dark:text-gray-300">
-        {value}%
-      </span>
-    </div>
-  );
-}
-
-/* ------------------ page ------------------ */
-
-function Trends() {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function Trends() {
   const [animateBars, setAnimateBars] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["analysis"],
-    queryFn: () => api.get("/api/analysis").then((res) => res.data),
+    queryFn: async () => {
+      return api.get("/api/analysis").then((res) => res.data);
+    },
     staleTime: 1000 * 60 * 5,
   });
 
   useEffect(() => {
     if (data) {
-      requestAnimationFrame(() => setAnimateBars(true));
+      setTimeout(() => setAnimateBars(true), 200);
     }
   }, [data]);
 
-  if (isLoading || !data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
-        Loading trends…
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black">
-        Failed to load trends.
-      </div>
-    );
-  }
+  if (isLoading || !data) return <div className="flex justify-center py-20 text-slate-500">Compiling trends…</div>;
+  if (isError) return <div className="flex justify-center py-20 text-red-500">Failed to load velocity trends.</div>;
 
   const { totalCommits, pattern } = data;
 
@@ -111,9 +65,9 @@ function Trends() {
 
   const previousRisk = Math.max(0, latestRisk - 8);
 
-  let direction = "Stable";
-  if (latestRisk > previousRisk) direction = "Worsening";
-  if (latestRisk < previousRisk) direction = "Improving";
+  let direction = "Static";
+  if (latestRisk > previousRisk) direction = "Escalating";
+  if (latestRisk < previousRisk) direction = "Resolving";
 
   const history = pattern.hourHistogram
     .map((count, hour) => ({
@@ -124,85 +78,85 @@ function Trends() {
     .slice(-6);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
-      {/* Navbar */}
-      <div className="bg-white dark:bg-gray-900 px-6 py-4 flex justify-between items-center shadow-sm">
-        <h1 className="text-xl font-bold">SilentDrop</h1>
-
-        <div className="hidden md:flex gap-6 items-center">
-          <NavLink to="/patterns">Patterns</NavLink>
-          <NavLink to="/trends" className="font-semibold">
-            Trends
-          </NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <ThemeToggle />
-        </div>
-
-        <button
-          className="md:hidden text-2xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          ☰
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-900 px-6 py-4 space-y-3">
-          <NavLink to="/patterns" className="block">
-            Patterns
-          </NavLink>
-          <NavLink to="/trends" className="block">
-            Trends
-          </NavLink>
-          <NavLink to="/dashboard" className="block">
-            Dashboard
-          </NavLink>
-          <ThemeToggle />
-        </div>
-      )}
-
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <h2 className="text-2xl font-semibold mb-8">
-          Burnout Trends
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-          <TrendCard title="Latest Risk" value={`${latestRisk}%`} />
-          <TrendCard title="Previous Risk" value={`${previousRisk}%`} />
-          <TrendCard title="Direction" value={direction} />
-        </div>
-
-        <div className="bg-white dark:bg-gray-900 rounded-xl p-6 md:p-8 shadow">
-          <h3 className="font-semibold mb-4">
-            Recent Activity Pattern
-          </h3>
-
-          {history.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              Not enough recent activity to show a trend.
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {history.map((h, index) => (
-                <MiniTrendBar
-                  key={h.hour}
-                  label={formatHourLabel(h.hour)}
-                  value={h.risk}
-                  index={index}
-                  animate={animateBars}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-6">
-          Trends are derived from your recent coding patterns and activity timing.
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto w-full">
+      <motion.div variants={itemAnim} className="mb-10 text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Velocity Trends</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+          Metrics derived from your coding volume and timing density. A macro-view of your trajectory over time.
         </p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <motion.div variants={itemAnim}>
+           <TrendCard title="Current Index" value={`${latestRisk}`} suffix="%" />
+        </motion.div>
+        <motion.div variants={itemAnim}>
+           <TrendCard title="Baseline Shift" value={`${previousRisk}`} suffix="%" />
+        </motion.div>
+        <motion.div variants={itemAnim}>
+           <TrendCard title="Trajectory Vector" value={direction} highlight={direction === "Escalating"} />
+        </motion.div>
       </div>
+
+      <motion.div variants={itemAnim} className="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-indigo-500"></span> Recent Temporal Mass
+        </h3>
+
+        {history.length === 0 ? (
+          <p className="text-slate-500 dark:text-slate-400 text-sm">
+            Insufficient telemetry detected in the recent window.
+          </p>
+        ) : (
+          <div className="space-y-5">
+            {history.map((h, index) => (
+              <MiniTrendBar
+                key={h.hour}
+                label={formatHourLabel(h.hour)}
+                value={h.risk}
+                index={index}
+                animate={animateBars}
+              />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function TrendCard({ title, value, suffix, highlight }) {
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300 hover:shadow-md group h-full flex flex-col justify-center">
+      <p className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3 group-hover:text-indigo-500 transition-colors">
+        {title}
+      </p>
+      <p className={`text-4xl font-light ${highlight ? "text-indigo-600 dark:text-indigo-400" : "text-slate-900 dark:text-slate-100"}`}>
+        {value} {suffix && <span className="text-lg text-slate-400 font-normal">{suffix}</span>}
+      </p>
     </div>
   );
 }
 
-export default Trends;
+function MiniTrendBar({ label, value, index, animate }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="w-16 text-sm font-mono text-slate-500 dark:text-slate-400">
+        {label}
+      </span>
+
+      <div className="flex-1 h-3 bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden">
+        <motion.div
+          initial={{ width: "0%" }}
+          animate={{ width: animate ? `${value}%` : "0%" }}
+          transition={{ duration: 1, delay: index * 0.15, ease: "easeOut" }}
+          className={`h-full rounded-full ${getBarOpcaity(value)}`}
+        />
+      </div>
+
+      <span className="w-12 text-right text-sm font-mono text-slate-600 dark:text-slate-300">
+        {value}%
+      </span>
+    </div>
+  );
+}
