@@ -13,22 +13,12 @@ function Landing() {
     </svg>
   );
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (loading) return;
     setLoading(true);
 
     const oauthUrl = "https://silentdrop-backend.onrender.com/api/auth/github";
-
-    try {
-      for (let i = 0; i < 3; i++) {
-        const res = await fetch("https://silentdrop-backend.onrender.com/health", { cache: "no-store" });
-        if (res.ok) break;
-        await new Promise((r) => setTimeout(r, 1500));
-      }
-      window.location.href = oauthUrl;
-    } catch (err) {
-      window.location.href = oauthUrl;
-    }
+    window.location.href = oauthUrl;
   };
 
   const containerVariants = {

@@ -24,8 +24,10 @@ export default function Dashboard() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => {
-      const userRes = await api.get("/api/auth/me");
-      const dashboardRes = await api.get("/api/dashboard");
+      const [userRes, dashboardRes] = await Promise.all([
+        api.get("/api/auth/me"),
+        api.get("/api/dashboard")
+      ]);
       return { user: userRes.data.user, dashboard: dashboardRes.data };
     },
     staleTime: 1000 * 60 * 5,
