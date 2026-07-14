@@ -1,7 +1,16 @@
 import axios from "axios";
 
+const getBackendUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  const isLocal = typeof window !== "undefined" && 
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+  return isLocal ? "http://localhost:5000" : "https://silentdrop-backend.onrender.com";
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL: getBackendUrl(),
 });
 
 api.interceptors.request.use((config) => {

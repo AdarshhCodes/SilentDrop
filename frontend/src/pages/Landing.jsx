@@ -17,7 +17,10 @@ function Landing() {
     if (loading) return;
     setLoading(true);
 
-    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const defaultBackend = isLocal ? "http://localhost:5000" : "https://silentdrop-backend.onrender.com";
+    const backendUrl = import.meta.env.VITE_API_URL || defaultBackend;
+
     const oauthUrl = `${backendUrl}/api/auth/github?origin=${encodeURIComponent(window.location.origin)}`;
     window.location.href = oauthUrl;
   };
