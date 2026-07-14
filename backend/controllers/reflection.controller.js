@@ -8,7 +8,7 @@ exports.addReflection = async (req, res) => {
     if (!date) return res.status(400).json({ error: "Date is required." });
 
     // Upsert the reflection for the day
-    let reflection = await Reflection.findOne({ user: req.user._id, date });
+    let reflection = await Reflection.findOne({ user: req.user.id, date });
     
     if (reflection) {
       reflection.mood = mood !== undefined ? mood : reflection.mood;
@@ -16,7 +16,7 @@ exports.addReflection = async (req, res) => {
       await reflection.save();
     } else {
       reflection = new Reflection({
-        user: req.user._id,
+        user: req.user.id,
         date,
         mood: mood || 'none',
         note: note || ''
@@ -34,7 +34,7 @@ exports.addReflection = async (req, res) => {
 exports.getReflections = async (req, res) => {
   try {
     // Optionally we can get for a specific month or week later
-    const reflections = await Reflection.find({ user: req.user._id }).sort({ date: -1 }).limit(30);
+    const reflections = await Reflection.find({ user: req.user.id }).sort({ date: -1 }).limit(30);
     res.json(reflections);
   } catch (error) {
     console.error("Error fetching reflections:", error);
@@ -45,7 +45,7 @@ exports.getReflections = async (req, res) => {
 exports.getReflectionForDate = async (req, res) => {
   try {
     const { date } = req.params;
-    const reflection = await Reflection.findOne({ user: req.user._id, date });
+    const reflection = await Reflection.findOne({ user: req.user.id, date });
     res.json(reflection || null);
   } catch (error) {
     console.error("Error fetching reflection for date:", error);

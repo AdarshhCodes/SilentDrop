@@ -7,7 +7,7 @@ function DailyReflectionCard() {
   const [isSaving, setIsSaving] = useState(false);
   const [showNote, setShowNote] = useState(false);
 
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD localish
+  const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local
 
   useEffect(() => {
     async function fetchReflection() {

@@ -1,6 +1,6 @@
 const { calculateBurnoutScore } = require("../services/burnoutService");
 const { getTodaysCommitCount } = require(
-  "../services/github.service"
+  "../services/githubService"
 );
 function calculateTodayBurnout(commits) {
   // No work

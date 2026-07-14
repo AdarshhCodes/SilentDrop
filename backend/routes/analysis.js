@@ -3,7 +3,8 @@ const router = express.Router();
 
 const auth = require("../middleware/auth");
 const { ANALYSIS_DAYS_WINDOW } = require("../constants/analysisWindow");
-const { getISTHour, getISTDay } = require("../utils/time");
+const { getHourInTimezone, getDayInTimezone } = require("../utils/time");
+const User = require("../models/User");
 
 const { fetchRawCommits } = require("../services/githubService");
 
@@ -13,6 +14,9 @@ router.get("/", auth, async (req, res) => {
     if (!username) {
       return res.status(400).json({ error: "GitHub username missing" });
     }
+
+    const user = await User.findById(req.user.id);
+    const timezone = user?.preferences?.timezone || "UTC";
 
     const hourHistogram = Array(24).fill(0);
     let totalCommits = 0;
@@ -37,13 +41,13 @@ router.get("/", auth, async (req, res) => {
 
       totalCommits++;
 
-      // IST-normalized hour & day
-      const hour = getISTHour(dateStr);
-      const day = getISTDay(dateStr);
+      // Timezone-normalized hour & day
+      const hour = getHourInTimezone(dateStr, timezone);
+      const day = getDayInTimezone(dateStr, timezone);
 
       hourHistogram[hour]++;
 
-      // Late night: 22:00 – 04:59 IST
+      // Late night: 22:00 – 04:59
       if (hour >= 22 || hour <= 4) {
         lateNightCommits++;
       }

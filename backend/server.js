@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 const cors = require("cors");
 const express = require("express");
 
@@ -22,7 +23,7 @@ app.set("trust proxy", 1);
 const allowedOrigins = [
    "https://silent-drop.vercel.app",
   "https://silentdrop-frontend.onrender.com",
- 
+  process.env.FRONTEND_URL || "http://localhost:5173"
 ];
 app.use(cors({
   origin: function (origin, callback) {

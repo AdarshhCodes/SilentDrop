@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ThemeToggle from "../components/ThemeToggle";
 import { motion } from "framer-motion";
 
+// Load Spinner while connecting to github
+const Spinner = () => (
+  <svg className="h-5 w-5 animate-spin text-white dark:text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+  </svg>
+);
+
 function Landing() {
   const [loading, setLoading] = useState(false);
-
-  // Load Spinner while connecting to github
-  const Spinner = () => (
-    <svg className="h-5 w-5 animate-spin text-white dark:text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-    </svg>
-  );
 
   const handleLogin = () => {
     if (loading) return;
     setLoading(true);
 
-    const oauthUrl = "https://silentdrop-backend.onrender.com/api/auth/github";
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const oauthUrl = `${backendUrl}/api/auth/github?origin=${encodeURIComponent(window.location.origin)}`;
     window.location.href = oauthUrl;
   };
 

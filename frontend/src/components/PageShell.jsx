@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api";
@@ -19,17 +19,17 @@ export default function PageShell({ children }) {
     { path: "/reflection", label: "Reflection" }
   ];
 
-  const { data: analysis } = useQuery({
-    queryKey: ["analysis"],
+  const { data: dashboardData } = useQuery({
+    queryKey: ["dashboard"],
     queryFn: async () => {
-      const res = await api.get("/api/analysis");
+      const res = await api.get("/api/dashboard");
       return res.data;
     },
     staleTime: 1000 * 60 * 5,
     enabled: !!localStorage.getItem("token"),
   });
 
-  const risk = analysis?.burnoutRisk || 0;
+  const risk = dashboardData?.burnoutRisk || 0;
   const isDigitalSunset = risk >= 75;
   const isExtremeSunset = risk >= 90;
 

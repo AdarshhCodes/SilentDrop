@@ -13,21 +13,21 @@ const itemAnim = {
 };
 
 export default function Reflection() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["analysis"],
+  const { data: dashboardData, isLoading, isError } = useQuery({
+    queryKey: ["dashboard"],
     queryFn: async () => {
-      return api.get("/api/analysis", { withCredentials: true }).then((res) => res.data);
+      return api.get("/api/dashboard").then((res) => res.data);
     },
     staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading) return <div className="flex justify-center py-20 text-slate-500">Loading reflection metrics…</div>;
-  if (isError || !data) return <div className="flex justify-center py-20 text-red-500">Failed to load reflection telemetry.</div>;
+  if (isError || !dashboardData) return <div className="flex justify-center py-20 text-red-500">Failed to load reflection telemetry.</div>;
 
   /* ---------------------------
      Context-aware reflection
   ---------------------------- */
-  const risk = data.burnoutRisk ?? 0;
+  const risk = dashboardData.burnoutRisk ?? 0;
   const message =
     risk < 40
       ? {

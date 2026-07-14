@@ -9,7 +9,7 @@ exports.updatePreferences = async (req, res) => {
         return res.status(400).json({ error: "Invalid core hours." });
     }
 
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (timezone) user.preferences.timezone = timezone;
@@ -27,7 +27,7 @@ exports.updatePreferences = async (req, res) => {
 
 exports.getPreferences = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ error: "User not found" });
     
     // Return preferences or default if not set

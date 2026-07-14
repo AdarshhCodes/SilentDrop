@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 function RiskMeter({ value }) {
   const radius = 70;
@@ -7,33 +7,28 @@ function RiskMeter({ value }) {
   const circumference = normalizedRadius * 2 * Math.PI;
 
   const [animatedValue, setAnimatedValue] = useState(0);
-  const [animationDone, setAnimationDone] = useState(false);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
-  if (hasAnimated.current) return;
-  hasAnimated.current = true;
+    if (!value) return;
 
-  let startTime = null;
-  const duration = 1200;
+    let startTime = null;
+    const duration = 1200;
 
-  const animate = (time) => {
-    if (!startTime) startTime = time;
-    const progress = Math.min((time - startTime) / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const currentValue = Math.round(eased * value);
+    const animate = (time) => {
+      if (!startTime) startTime = time;
+      const progress = Math.min((time - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const currentValue = Math.round(eased * value);
 
-    setAnimatedValue(currentValue);
+      setAnimatedValue(currentValue);
 
-    if (progress < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      setAnimationDone(true);
-    }
-  };
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
 
-  requestAnimationFrame(animate);
-}, [value]);
+    requestAnimationFrame(animate);
+  }, [value]);
 
  
   const strokeDashoffset =

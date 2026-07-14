@@ -2,6 +2,8 @@ const axios = require("axios");
 const cache = new Map();
 const CACHE_TTL = 30 * 60 * 1000;
 const pendingRequests = new Map();
+const rawCommitsCache = new Map();
+const RAW_CACHE_TTL = 5 * 60 * 1000; // 5 minutes in ms
 
 const githubApi = axios.create({
   baseURL: "https://api.github.com",
@@ -80,6 +82,15 @@ async function fetchCommitActivity(username) {
  Patterns aur Analysis page ke liye
  */
 async function fetchRawCommits(username) {
+  const now = Date.now();
+  if (rawCommitsCache.has(username)) {
+    const { data, timestamp } = rawCommitsCache.get(username);
+    if (now - timestamp < RAW_CACHE_TTL) {
+      console.log(`[Cache Hit] Returning cached raw commits for ${username}`);
+      return data;
+    }
+  }
+
   const allCommits = [];
   const seenShas = new Set();
 
@@ -124,6 +135,7 @@ async function fetchRawCommits(username) {
       }
     }
 
+    rawCommitsCache.set(username, { data: allCommits, timestamp: now });
     return allCommits;
 
   } catch (error) {
@@ -134,6 +146,51 @@ async function fetchRawCommits(username) {
   }
 }
 
+const todaysCommitsCache = new Map();
+const TODAYS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes in ms
 
+async function getTodaysCommitCount(username) {
+  const now = Date.now();
+  const cacheKey = `commits_${username}`;
 
-module.exports = { fetchCommitActivity , fetchRawCommits };
+  // Check cache first
+  if (todaysCommitsCache.has(cacheKey)) {
+    const { count, timestamp } = todaysCommitsCache.get(cacheKey);
+    if (now - timestamp < TODAYS_CACHE_TTL) {
+      console.log(`[Cache Hit] Returning cached commits for ${username}`);
+      return count;
+    }
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayISO = today.toISOString().split("T")[0]; // YYYY-MM-DD
+
+  try {
+    // Use GitHub Search API for efficient cross-repo commit counting
+    // Query: author:${username} committer-date:>=YYYY-MM-DD
+    const response = await githubApi.get("/search/commits", {
+      params: {
+        q: `author:${username} author-date:>=${todayISO}`,
+      },
+    });
+
+    const totalCount = response.data.total_count || 0;
+
+    // Store in cache
+    todaysCommitsCache.set(cacheKey, { count: totalCount, timestamp: now });
+    console.log(`[GitHub API] Fetched and cached ${totalCount} commits for ${username}`);
+
+    return totalCount;
+  } catch (error) {
+    console.error("Error fetching commit count from GitHub Search API:", error.message);
+    
+    // If search API fails, fall back to previous cached value if available
+    if (todaysCommitsCache.has(cacheKey)) {
+      return todaysCommitsCache.get(cacheKey).count;
+    }
+    return 0;
+  }
+}
+
+module.exports = { fetchCommitActivity, fetchRawCommits, getTodaysCommitCount };
