@@ -24,7 +24,13 @@ router.get("/", auth, async (req, res) => {
     let weekendCommits = 0;
 
     // Fetch raw commits from GitHub
-    const commits = await fetchRawCommits(username);
+    let commits = [];
+    try {
+      commits = await fetchRawCommits(username);
+    } catch (err) {
+      console.error("Error fetching raw commits from GitHub:", err.message);
+      commits = [];
+    }
 
     const now = Date.now();
     const MS_PER_DAY = 1000 * 60 * 60 * 24;
