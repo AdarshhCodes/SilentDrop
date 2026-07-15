@@ -10,10 +10,14 @@ router.get(
   "/github",
   (req, res, next) => {
     const origin = req.query.origin || req.headers.referer || "https://silent-drop.vercel.app";
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const callbackURL = `${protocol}://${req.get('host')}/api/auth/github/callback`;
+
     passport.authenticate("github", {
       scope: ["user:email"],
       prompt: "login",
       state: origin,
+      callbackURL,
     })(req, res, next);
   }
 );
@@ -23,9 +27,13 @@ router.get(
   "/github/callback",
   (req, res, next) => {
     const stateOrigin = req.query.state || process.env.FRONTEND_URL || "https://silent-drop.vercel.app";
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const callbackURL = `${protocol}://${req.get('host')}/api/auth/github/callback`;
+
     passport.authenticate("github", {
       failureRedirect: stateOrigin,
       session: false,
+      callbackURL,
     })(req, res, next);
   },
   (req, res) => {
