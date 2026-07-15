@@ -15,6 +15,22 @@ const githubApi = axios.create({
   },
 });
 
+async function makeGithubRequest(url, config = {}) {
+  try {
+    return await githubApi.get(url, config);
+  } catch (error) {
+    if (error.response?.status === 401 && process.env.GITHUB_TOKEN) {
+      console.warn("Invalid GITHUB_TOKEN detected in .env. Retrying unauthenticated...");
+      const unauthApi = axios.create({
+        baseURL: "https://api.github.com",
+        headers: { Accept: "application/vnd.github+json" },
+      });
+      return await unauthApi.get(url, config);
+    }
+    throw error;
+  }
+}
+
 async function fetchCommitActivity(username) {
   console.log("=== fetchCommitActivity ===");
   console.log("Username:", username);
@@ -38,7 +54,7 @@ async function fetchCommitActivity(username) {
 
     try {
       console.log(`Fetching repos for user: ${username}`);
-      const reposRes = await githubApi.get(
+      const reposRes = await makeGithubRequest(
         `/users/${username}/repos`,
         { params: { per_page: 5 } }
       );
@@ -47,7 +63,7 @@ async function fetchCommitActivity(username) {
 
       for (const repo of reposRes.data) {
         console.log(`Fetching commits for repo: ${repo.name}`);
-        const commitsRes = await githubApi.get(
+        const commitsRes = await makeGithubRequest(
           `/repos/${username}/${repo.name}/commits`,
           { params: { per_page: 20 } }
         );
@@ -96,7 +112,7 @@ async function fetchRawCommits(username) {
 
   try {
     // Fetch user repos (increase per_page for accuracy)
-    const reposRes = await githubApi.get(
+    const reposRes = await makeGithubRequest(
       `/users/${username}/repos`,
       { params: { per_page: 10 } }
     );
@@ -106,7 +122,7 @@ async function fetchRawCommits(username) {
       let hasMore = true;
 
       while (hasMore) {
-        const commitsRes = await githubApi.get(
+        const commitsRes = await makeGithubRequest(
           `/repos/${username}/${repo.name}/commits`,
           {
             params: {
@@ -169,7 +185,7 @@ async function getTodaysCommitCount(username) {
   try {
     // Use GitHub Search API for efficient cross-repo commit counting
     // Query: author:${username} committer-date:>=YYYY-MM-DD
-    const response = await githubApi.get("/search/commits", {
+    const response = await makeGithubRequest("/search/commits", {
       params: {
         q: `author:${username} author-date:>=${todayISO}`,
       },
