@@ -1,6 +1,9 @@
 # SilentDrop 🧠💻
 
+[![CI](https://github.com/AdarshhCodes/SilentDrop/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AdarshhCodes/SilentDrop/actions/workflows/ci.yml)
+
 *A mindful developer burnout & work-pattern analyzer*
+
 
 SilentDrop is a full-stack web application that analyzes a developer’s GitHub activity to surface **work patterns, burnout risk, and behavioral trends** — without judgment.
 

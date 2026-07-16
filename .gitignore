@@ -21,3 +21,11 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Test coverage reports (generated locally and in CI — not committed)
+coverage/
+backend/coverage/
+frontend/coverage/
+
+# Runtime logs
+backend/server_error.log

@@ -5,10 +5,11 @@ const auth = require("../middleware/auth");
 const { ANALYSIS_DAYS_WINDOW } = require("../constants/analysisWindow");
 const { getHourInTimezone, getDayInTimezone } = require("../utils/time");
 const User = require("../models/User");
-
 const { fetchRawCommits } = require("../services/githubService");
+const logger = require("../utils/logger");
 
-router.get("/", auth, async (req, res) => {
+router.get("/", auth, async (req, res, next) => {
+
   try {
     const username = req.user.githubUsername;
     if (!username) {
@@ -28,7 +29,7 @@ router.get("/", auth, async (req, res) => {
     try {
       commits = await fetchRawCommits(username);
     } catch (err) {
-      console.error("Error fetching raw commits from GitHub:", err.message);
+      logger.error({ reqId: req.id, username, err: err.message }, "Error fetching raw commits from GitHub");
       commits = [];
     }
 
@@ -102,9 +103,10 @@ if (totalCommits >= 50) {
     });
 
   } catch (error) {
-    console.error("Pattern analysis error:", error);
-    res.status(500).json({ error: "Failed to analyze patterns" });
+    logger.error({ reqId: req.id, err: error }, "Pattern analysis error");
+    next(error);
   }
+
 });
 
 module.exports = router;

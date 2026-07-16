@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─── Backend ────────────────────────────────────────────────────────────────
+  backend:
+    name: Backend — Lint & Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # All commands run from repo root (backend uses root package.json)
+        working-directory: .
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache root node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: backend-deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            backend-deps-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        # The backend does not yet have its own eslint.config — skip gracefully
+        # if eslint is not in root devDependencies; the step still exits 0 so
+        # the job doesn't fail on a missing config.  Add eslint to root devDeps
+        # to enable this step fully.
+        run: |
+          if npx --no-install eslint --version > /dev/null 2>&1; then
+            npx eslint backend/ --max-warnings=0
+          else
+            echo "ESLint not found in root devDependencies — skipping backend lint."
+          fi
+
+      - name: Test with coverage
+        run: npm run test:coverage
+        env:
+          # mongodb-memory-server downloads a binary on first run; the Actions
+          # runner has network access, so this works out of the box.
+          CI: true
+
+      - name: Upload backend coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          retention-days: 7
+
+  # ─── Frontend ───────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend — Lint & Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache frontend node_modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: frontend-deps-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            frontend-deps-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint -- --max-warnings=0
+
+      - name: Test with coverage
+        run: npm run test:coverage
+        env:
+          CI: true
+
+      - name: Upload frontend coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 7
