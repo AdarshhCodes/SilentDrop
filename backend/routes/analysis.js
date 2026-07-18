@@ -7,6 +7,7 @@ const { getHourInTimezone, getDayInTimezone } = require("../utils/time");
 const User = require("../models/User");
 const { fetchRawCommits } = require("../services/githubService");
 const logger = require("../utils/logger");
+const DailyMetric = require("../models/DailyMetric");
 
 router.get("/", auth, async (req, res, next) => {
 
@@ -109,5 +110,45 @@ if (totalCommits >= 50) {
 
 });
 
+// ─── GET /api/analysis/history ───────────────────────────────────────────────
+// Returns the most recent N DailyMetric records for the current user, ordered
+// oldest → newest so the frontend can chart them left-to-right.
+//
+// BUG NOTE (intentionally fixed before first deploy):
+//   .sort({ date: 1 }).limit(days) would return the OLDEST N records once a
+//   user has more history than `days`.  The correct pattern is:
+//   sort descending (most-recent first), limit, then reverse in memory so the
+//   response is still oldest-to-newest for charting.
+router.get("/history", auth, async (req, res, next) => {
+  try {
+    const rawDays = parseInt(req.query.days, 10);
+    const days = (!rawDays || rawDays < 1) ? 30 : Math.min(rawDays, 90);
+
+    // Sort descending so limit() keeps the MOST RECENT records.
+    const docs = await DailyMetric
+      .find({ user: req.user.id })
+      .sort({ date: -1 })
+      .limit(days)
+      .lean();
+
+    // Reverse in memory → oldest-to-newest order for the chart.
+    docs.reverse();
+
+    res.json({
+      days: docs.map((d) => ({
+        date:             d.date,
+        commitCount:      d.commitCount,
+        burnoutRisk:      d.burnoutRisk,
+        lateNightCommits: d.lateNightCommits,
+        weekendCommits:   d.weekendCommits,
+      })),
+    });
+  } catch (error) {
+    logger.error({ reqId: req.id, err: error }, "History query error");
+    next(error);
+  }
+});
+
 module.exports = router;
+
 

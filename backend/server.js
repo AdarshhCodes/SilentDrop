@@ -118,11 +118,16 @@ app.use(errorHandler);
 // ─── MongoDB connection ────────────────────────────────────────────────────────
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => logger.info("MongoDB connected"))
+  .then(() => {
+    logger.info("MongoDB connected");
+    // Start the nightly telemetry cron after DB is confirmed ready.
+    require('./cron');
+  })
   .catch((err) => {
     logger.error({ err }, "MongoDB connection error");
     process.exit(1);
   });
+
 
 // ─── Start server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
