@@ -27,7 +27,7 @@ function signAccessToken(user) {
 function signRefreshToken(userId) {
   return jwt.sign(
     { sub: String(userId), type: 'refresh', jti: crypto.randomUUID() },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 }
@@ -38,8 +38,9 @@ function verifyAccessToken(token) {
 }
 
 function verifyRefreshToken(token) {
-  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET);
 }
+
 
 // ─── Refresh token hashing ────────────────────────────────────────────────────
 // Store only a SHA-256 hash of the refresh token in the DB so a DB dump
