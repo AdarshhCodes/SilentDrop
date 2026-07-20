@@ -67,6 +67,7 @@ router.get(
   githubLoginLimiter,   // ← rate-limit the callback too (prevents callback replay spam)
   (req, res, next) => {
     const stateOrigin = req.query.state || process.env.FRONTEND_URL || 'https://silent-drop.vercel.app';
+    req.authOrigin = stateOrigin;
     const protocol = req.headers['x-forwarded-proto'] || req.protocol;
     const callbackURL = `${protocol}://${req.get('host')}/api/auth/github/callback`;
 
@@ -89,7 +90,7 @@ router.get(
         refreshTokenHash: hashRefreshToken(refreshToken),
       });
 
-      const frontendUrl = req.query.state || process.env.FRONTEND_URL || 'https://silent-drop.vercel.app';
+      const frontendUrl = req.authOrigin || req.query.state || process.env.FRONTEND_URL || 'https://silent-drop.vercel.app';
       const cleanUrl    = frontendUrl.endsWith('/') ? frontendUrl.slice(0, -1) : frontendUrl;
 
       // RESIDUAL RISK — documented, not silent:
@@ -105,9 +106,10 @@ router.get(
 
     } catch (err) {
       logger.error({ err }, 'auth: error issuing tokens after OAuth callback');
-      res.redirect(process.env.FRONTEND_URL || 'https://silent-drop.vercel.app');
+      res.redirect(req.authOrigin || process.env.FRONTEND_URL || 'https://silent-drop.vercel.app');
     }
   }
+
 );
 
 // ─── POST /api/auth/refresh ───────────────────────────────────────────────────
