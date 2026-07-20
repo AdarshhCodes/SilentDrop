@@ -189,8 +189,9 @@ async function getTodaysCommitCount(username) {
 
   try {
     const response = await makeGithubRequest("/search/commits", {
-      params: { q: `author:${username} author-date>=${todayISO}` },
+      params: { q: `author:${username} author-date:>=${todayISO}` },
     });
+
 
     const totalCount = response.data.total_count || 0;
     todaysCommitsCache.set(cacheKey, { count: totalCount, timestamp: now });
