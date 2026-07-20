@@ -2,9 +2,10 @@ const express    = require('express');
 const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 const router     = express.Router();
-const reflectionController       = require('../controllers/reflection.controller');
+const reflectionController        = require('../controllers/reflection.controller');
 const exportReflectionsController = require('../controllers/exportReflections.controller');
 const auth = require('../middleware/auth');
+const { validate, reflectionBodySchema } = require('../validators');
 
 // ─── Export rate limiter ───────────────────────────────────────────────────────
 // PDF generation is CPU-intensive; limit each user to 5 exports per hour.
@@ -29,7 +30,7 @@ const exportLimiter = rateLimit({
 router.get('/export', auth, exportLimiter, exportReflectionsController.exportReflections);
 
 // ─── Existing routes (unchanged) ─────────────────────────────────────────────
-router.post('/', auth, reflectionController.addReflection);
+router.post('/', auth, validate(reflectionBodySchema), reflectionController.addReflection);
 router.get('/', auth, reflectionController.getReflections);
 router.get('/:date', auth, reflectionController.getReflectionForDate);
 

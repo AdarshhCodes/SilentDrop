@@ -79,7 +79,9 @@ describe('POST /api/reflections', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ mood: 'okay', note: 'No date in this payload' });
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('Date is required.');
+    // Zod validator intercepts before the controller; error message changed in Phase 8.
+    expect(res.body.error).toBe('Validation failed');
+    expect(res.body.fields.date).toBeDefined();
   });
 
   test('creates and returns a new reflection with provided date, mood, and note', async () => {

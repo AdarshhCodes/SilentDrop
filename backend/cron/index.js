@@ -38,8 +38,6 @@ cron.schedule('0 23 * * *', async () => {
   try {
     await recordDailyMetricsForAllUsers();
   } catch (err) {
-    // Should not reach here (telemetryService handles per-user errors internally),
-    // but guard against unexpected top-level throws.
     logger.error({ err }, 'cron: recordDailyMetricsForAllUsers threw unexpectedly');
   }
 }, {

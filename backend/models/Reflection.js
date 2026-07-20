@@ -26,4 +26,9 @@ const reflectionSchema = new mongoose.Schema({
   }
 });
 
+// Supports: find({ user, date }) for single-day lookup and
+// find({ user }).sort({ date: -1 }).limit(30) for history queries.
+reflectionSchema.index({ user: 1, date: 1 });
+
 module.exports = mongoose.model("Reflection", reflectionSchema);
+
