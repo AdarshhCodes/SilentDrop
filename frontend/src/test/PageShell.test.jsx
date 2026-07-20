@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 // ─── Module mocks (must be before component import) ──────────────────────────
@@ -8,18 +8,25 @@ vi.mock('@tanstack/react-query', () => ({
   useQuery: vi.fn(),
 }));
 
-// Mock framer-motion: replace motion.* and AnimatePresence with plain HTML so
-// jsdom doesn't need the Web Animations API.
+// Helper: strip framer-motion-specific props so they are not forwarded to DOM
+// elements (which causes React warnings about unrecognised attributes).
+// The parameters are intentionally destructured-and-discarded; ESLint disable
+// is scoped tightly to just this helper.
+/* eslint-disable no-unused-vars */
+const stripMotion = ({
+  children,
+  initial, animate, exit, transition,
+  layoutId, whileHover, whileTap, drag, dragConstraints, variants,
+  ...rest
+}) => ({ children, rest });
+/* eslint-enable no-unused-vars */
+
 vi.mock('framer-motion', () => ({
   motion: {
-    div:  ({ children, initial, animate, exit, transition, layoutId, whileHover, ...p }) =>
-            <div {...p}>{children}</div>,
-    nav:  ({ children, initial, animate, exit, transition, layoutId, ...p }) =>
-            <nav {...p}>{children}</nav>,
-    main: ({ children, initial, animate, exit, transition, layoutId, ...p }) =>
-            <main {...p}>{children}</main>,
-    span: ({ children, initial, animate, exit, transition, layoutId, ...p }) =>
-            <span {...p}>{children}</span>,
+    div:  (p) => { const { children, rest } = stripMotion(p); return <div {...rest}>{children}</div>; },
+    nav:  (p) => { const { children, rest } = stripMotion(p); return <nav {...rest}>{children}</nav>; },
+    main: (p) => { const { children, rest } = stripMotion(p); return <main {...rest}>{children}</main>; },
+    span: (p) => { const { children, rest } = stripMotion(p); return <span {...rest}>{children}</span>; },
   },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
